@@ -1,9 +1,9 @@
 # QMK Design Frontend
 
-frontend of the site
+Frontend for my QMK Design project 
 
-I'm thinking of doing this in React... but not thrilled about it :/ 
+Built in React with Typescript via Vite.
 
-If there's anything else in not javascript that seems more fun I'll go with that. 
+Intended to mirror something like Oryx (ZSA's keyboard configurator) but not for a specific company.
 
-HTMX ?????
+
