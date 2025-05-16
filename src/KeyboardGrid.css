@@ -17,5 +17,11 @@
   align-items: center;
   color: white; 
   padding: 10px;
+  font-size: large;
 }
+
+.nonstandard{
+  font-size: x-small;
+}
+
 

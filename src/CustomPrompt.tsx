@@ -9,14 +9,63 @@ interface CustomPromptProps {
 }
 
 const nonStandardKeys = [
-  'Esc', 'Enter', 'Shift', 'Ctrl', 'Alt', 'Tab', 'Backspace', 'Delete', 'Space',
+  'Esc', 'Enter', 'Meta', 'Fn', 'Shift', 'Caps Lock', 'Ctrl', 'Alt', 'Tab', '󰁮  BackSp', 'Delete', 'Space',
   'Up', 'Down', 'Left', 'Right', 'Home', 'End', 'PgUp', 'PgDn', 'F1', 'F2',
   'F3', 'F4', 'F5', 'F6', 'F7', 'F8', 'F9', 'F10', 'F11', 'F12'
 ];
 
+const nonStandardKeys_LINUX = [
+  'Esc', 'Enter', ' ', 'Fn', 'Shift', 'Caps Lock', 'Ctrl', 'Alt', 'Tab', '󰁮  BackSp', 'Delete', 'Space',
+  'Up', 'Down', 'Left', 'Right', 'Home', 'End', 'PgUp', 'PgDn', 'F1', 'F2',
+  'F3', 'F4', 'F5', 'F6', 'F7', 'F8', 'F9', 'F10', 'F11', 'F12'
+];
+
+const nonStandardKeys_WIN = [
+  'Esc', 'Enter', ' ', 'Fn', 'Shift', 'Caps Lock', 'Ctrl', 'Alt', 'Tab', '󰁮  BackSp', 'Delete', 'Space',
+  'Up', 'Down', 'Left', 'Right', 'Home', 'End', 'PgUp', 'PgDn', 'F1', 'F2',
+  'F3', 'F4', 'F5', 'F6', 'F7', 'F8', 'F9', 'F10', 'F11', 'F12'
+];
+
+const nonStandardKeys_MAC = [
+  'Esc', 'Enter', '󰘳 Command', ' Fn', 'Shift', 'Caps Lock', '󰘴 Ctrl', '󰘵 Option', 'Tab', '󰁮  BackSp', 'Delete', 'Space',
+  'Up', 'Down', 'Left', 'Right', 'Home', 'End', 'PgUp', 'PgDn', 'F1', 'F2',
+  'F3', 'F4', 'F5', 'F6', 'F7', 'F8', 'F9', 'F10', 'F11', 'F12'
+];
+
+let selectedKeyLayout: string[] = nonStandardKeys;
+
+const userAgent: string = navigator.userAgent;
+
+if (userAgent.includes('Win')) {
+  selectedKeyLayout = nonStandardKeys_WIN
+} else if (userAgent.includes('Mac')) {
+  selectedKeyLayout = nonStandardKeys_MAC
+} else if (userAgent.includes('Linux')) {
+  selectedKeyLayout = nonStandardKeys_LINUX
+}
+
+
+
 const CustomPrompt: React.FC<CustomPromptProps> = ({ isOpen, onClose, currentValue, onSave }) => {
   const [value, setValue] = useState<string>(currentValue);
   const [selectedKey, setSelectedKey] = useState<string | null>(null);
+
+
+  //Sets values to what is stored in selected key
+  useEffect(() => {
+    if (isOpen) {
+      if (selectedKeyLayout.includes(currentValue)) {
+        // If currentValue is a non-standard key
+        setSelectedKey(currentValue);
+        setValue(''); // Clear the typed value
+      } else {
+        // If currentValue is a standard character
+        setValue(currentValue);
+        setSelectedKey(null); // Clear the selected non-standard key
+      }
+    }
+  }, [isOpen, currentValue, selectedKeyLayout]);
+
 
   // Don't render anything if the prompt is closed
   if (!isOpen) {
@@ -28,9 +77,9 @@ const CustomPrompt: React.FC<CustomPromptProps> = ({ isOpen, onClose, currentVal
 
   //Clear out the alternate selection 
   const handleTypedInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const value = event.target.value;
-    if (value.length <= 1) { // Limit to one character
-      setValue(value);
+    const input = event.target.value;
+    if (input.length <= 1) { // Limit to one character
+      setValue(input.toUpperCase());
       setSelectedKey(null); // Clear selected non-standard key if typing
     }
   };
@@ -41,8 +90,19 @@ const CustomPrompt: React.FC<CustomPromptProps> = ({ isOpen, onClose, currentVal
   };
 
   const handleSave = () => {
-    const valueToSave = selectedKey !== null ? selectedKey : value;
-    onSave(valueToSave);
+    if (selectedKey !== null || value.length > 0) {
+      const valueToSave = selectedKey !== null ? selectedKey : value;
+      onSave(valueToSave);
+      setValue('');
+      setSelectedKey(null);
+      onClose(); // Close the prompt after saving
+    }
+  };
+
+  const handleClear = () => {
+    onSave('\u00A0'.repeat(9));
+    setValue('');
+    setSelectedKey(null);
     onClose(); // Close the prompt after saving
   };
 
@@ -60,15 +120,16 @@ const CustomPrompt: React.FC<CustomPromptProps> = ({ isOpen, onClose, currentVal
               type="text"
               value={value}
               onChange={handleTypedInputChange}
-              maxLength={1} // HTML attribute for clarity, but validation is in onChange
+              maxLength={1}
               placeholder="Type a character"
             />
             <button onClick={handleSave}>Enter</button>
+            <button onClick={handleClear}>Clear</button>
           </div>
           <div className="non-standard-keys-section">
             <h3>Non-Standard Keys</h3>
             <div className="non-standard-keys-list">
-              {nonStandardKeys.map(key => (
+              {selectedKeyLayout.map(key => (
                 <button
                   key={key}
                   className={selectedKey === key ? 'selected' : ''}

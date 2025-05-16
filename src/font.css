@@ -1,0 +1,114 @@
+/* Regular */
+@font-face {
+  font-family: 'CaskaydiaCoveNerdFont';
+  src: url('./assets/fonts/CascadiaCode/CaskaydiaCoveNerdFont-Regular.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+/* Bold */
+@font-face {
+  font-family: 'CaskaydiaCoveNerdFont';
+  src: url('./assets/fonts/CascadiaCode/CaskaydiaCoveNerdFont-Bold.ttf') format('truetype');
+  font-weight: bold;
+  font-style: normal;
+}
+
+/* Italic */
+@font-face {
+  font-family: 'CaskaydiaCoveNerdFont';
+  src: url('./assets/fonts/CascadiaCode/CaskaydiaCoveNerdFont-Italic.ttf') format('truetype');
+  font-weight: normal;
+  font-style: italic;
+}
+
+/* Bold Italic */
+@font-face {
+  font-family: 'CaskaydiaCoveNerdFont';
+  src: url('./assets/fonts/CascadiaCode/CaskaydiaCoveNerdFont-BoldItalic.ttf') format('truetype');
+  font-weight: bold;
+  font-style: italic;
+}
+
+/* Extra Light */
+@font-face {
+  font-family: 'CaskaydiaCoveNerdFont';
+  src: url('./assets/fonts/CascadiaCode/CaskaydiaCoveNerdFont-ExtraLight.ttf') format('truetype');
+  font-weight: 200; /* Or whatever the specific weight is */
+  font-style: normal;
+}
+
+/* Extra Light Italic */
+@font-face {
+  font-family: 'CaskaydiaCoveNerdFont';
+  src: url('./assets/fonts/CascadiaCode/CaskaydiaCoveNerdFont-ExtraLightItalic.ttf') format('truetype');
+  font-weight: 200;
+  font-style: italic;
+}
+
+/* Light */
+@font-face {
+  font-family: 'CaskaydiaCoveNerdFont';
+  src: url('./assets/fonts/CascadiaCode/CaskaydiaCoveNerdFont-Light.ttf') format('truetype');
+  font-weight: 300;
+  font-style: normal;
+}
+
+/* Light Italic */
+@font-face {
+  font-family: 'CaskaydiaCoveNerdFont';
+  src: url('./assets/fonts/CascadiaCode/CaskaydiaCoveNerdFont-LightItalic.ttf') format('truetype');
+  font-weight: 300;
+  font-style: italic;
+}
+
+/* Semi Bold */
+@font-face {
+  font-family: 'CaskaydiaCoveNerdFont';
+  src: url('./assets/fonts/CascadiaCode/CaskaydiaCoveNerdFont-SemiBold.ttf') format('truetype');
+  font-weight: 600;
+  font-style: normal;
+}
+
+/* Semi Bold Italic */
+@font-face {
+  font-family: 'CaskaydiaCoveNerdFont';
+  src: url('./assets/fonts/CascadiaCode/CaskaydiaCoveNerdFont-SemiBoldItalic.ttf') format('truetype');
+  font-weight: 600;
+  font-style: italic;
+}
+
+/* Semi Light */
+@font-face {
+  font-family: 'CaskaydiaCoveNerdFont';
+  src: url('./assets/fonts/CascadiaCode/CaskaydiaCoveNerdFont-SemiLight.ttf') format('truetype');
+  font-weight: 350; /* Or the specific weight */
+  font-style: normal;
+}
+
+/* Semi Light Italic */
+@font-face {
+  font-family: 'CaskaydiaCoveNerdFont';
+  src: url('./assets/fonts/CascadiaCode/CaskaydiaCoveNerdFont-SemiLightItalic.ttf') format('truetype');
+  font-weight: 350;
+  font-style: italic;
+}
+
+/* Add similar rules for the Mono and Propo versions if you need them */
+
+/* Example for Mono Regular */
+@font-face {
+  font-family: 'CaskaydiaCoveNerdFontMono';
+  src: url('./assets/fonts/CascadiaCode/CaskaydiaCoveNerdFontMono-Regular.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+/* Example for Propo Regular */
+@font-face {
+  font-family: 'CaskaydiaCoveNerdFontPropo';
+  src: url('./assets/fonts/CascadiaCode/CaskaydiaCoveNerdFontPropo-Regular.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+

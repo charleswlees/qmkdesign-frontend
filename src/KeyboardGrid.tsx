@@ -29,7 +29,7 @@ const KeyboardGrid: React.FC<KeyboardGridProps> = ({ layout, onCellClick }) => {
           {row.map((keyData, keyIndex) => (
             <div
               key={`${rowIndex}-${keyIndex}`}
-              className="key"
+              className={keyData.length>1? 'key nonstandard': 'key'}
               onClick = {() => onCellClick(rowIndex, keyIndex )}
             >
               {keyData}

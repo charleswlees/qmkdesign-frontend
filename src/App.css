@@ -5,6 +5,10 @@
   text-align: center;
 }
 
+body{
+  font-family: 'CaskaydiaCoveNerdFont', sans-serif; /* Use the font-family name you defined */
+}
+
 .logo {
   height: 6em;
   padding: 1.5em;
@@ -39,4 +43,10 @@
 
 .read-the-docs {
   color: #888;
+}
+
+.layerbar{
+  width: 100%;
+  background-color: grey;
+  margin-bottom: 2%;
 }
