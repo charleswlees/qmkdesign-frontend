@@ -1,0 +1,32 @@
+.layerbar {
+  display: flex; /* Arrange tabs in a row */
+  border-bottom: 1px solid #ccc; /* Optional: Add a separator line */
+  margin-bottom: 10px; /* Optional: Add space below the bar */
+}
+
+.layer-tab {
+  padding: 10px 15px; /* Padding inside each tab */
+  cursor: pointer; /* Indicate it's clickable */
+  border: 1px solid transparent; /* Add a transparent border initially */
+  margin-right: 5px; /* Space between tabs */
+  border-bottom: none; /* Don't show the bottom border */
+  transition: background-color 0.3s ease, border-color 0.3s ease; /* Smooth transitions */
+}
+
+.layer-tab:hover {
+  background-color: #f0f0f0; /* Hover effect */
+}
+
+.layer-tab.current {
+  background-color: #e0e0e0; /* Background for active tab */
+  border-color: #ccc; /* Border for active tab */
+  border-bottom: 1px solid transparent; /* Keep bottom border transparent or match background */
+  font-weight: bold; /* Make active tab text bold */
+}
+
+.addLayer {
+  cursor: pointer;
+  user-select: none;
+
+}
+
