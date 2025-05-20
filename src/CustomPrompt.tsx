@@ -58,7 +58,12 @@ const CustomPrompt: React.FC<CustomPromptProps> = ({ isOpen, onClose, currentVal
         // If currentValue is a non-standard key
         setSelectedKey(currentValue);
         setValue(''); // Clear the typed value
-      } else {
+      } else if (currentValue.length > 1){
+        //Handle blank keys
+        setValue('')
+        setSelectedKey(null);
+      }
+      else {
         // If currentValue is a standard character
         setValue(currentValue);
         setSelectedKey(null); // Clear the selected non-standard key
@@ -87,6 +92,8 @@ const CustomPrompt: React.FC<CustomPromptProps> = ({ isOpen, onClose, currentVal
   const handleNonStandardKeyClick = (key: string) => {
     setSelectedKey(key);
     setValue(''); // Clear typed value if a non-standard key is selected
+    onSave(key)
+    onClose();
   };
 
   const handleSave = () => {
