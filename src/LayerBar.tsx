@@ -1,5 +1,6 @@
-import React from 'react';
-import './LayerBar.css'; // Assuming you'll create a CSS file for styling
+import React from "react";
+import { FaPlus, FaMinus } from "react-icons/fa";
+import "./LayerBar.css"; 
 
 interface LayerBarProps {
   LayerCount: number;
@@ -14,7 +15,7 @@ const LayerBar: React.FC<LayerBarProps> = ({
   CurrentLayer,
   LayerChange,
   LayerAdd,
-  LayerRemove
+  LayerRemove,
 }) => {
   const renderTabs = () => {
     const tabs = [];
@@ -23,7 +24,7 @@ const LayerBar: React.FC<LayerBarProps> = ({
       const isCurrent = i === CurrentLayer;
 
       // Add a class based on whether it's the current layer for styling
-      const tabClassName = isCurrent ? 'layer-tab current' : 'layer-tab';
+      const tabClassName = isCurrent ? "layer-tab current" : "layer-tab";
 
       tabs.push(
         <div
@@ -40,13 +41,28 @@ const LayerBar: React.FC<LayerBarProps> = ({
   };
 
   return (
-    <>
-      <div className="layerbar">{renderTabs()}</div>
-      <div className="addLayer" onClick={LayerAdd}>Add Layer</div>
-      <div className="removeLayer" onClick={LayerRemove}>Remove Layer</div>
-    </>
-  )
+    <div className="layerbar">
+      {renderTabs()}
+      <div className="layer-controls">
+        <button
+          onClick={LayerAdd}
+          className="layer-action-button"
+          title="Add Layer"
+          disabled={LayerCount >= 10}
+        >
+          <FaPlus />
+        </button>
+        <button
+          onClick={LayerRemove}
+          className="layer-action-button"
+          title="Remove Last Layer"
+          disabled={LayerCount <= 1}
+        >
+          <FaMinus />
+        </button>
+      </div>
+    </div>
+  );
 };
 
 export default LayerBar;
-
