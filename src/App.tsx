@@ -1,18 +1,61 @@
-import { useEffect, useState } from 'react'
-import './App.css'
-import KeyboardGrid from './KeyboardGrid';
-import CustomPrompt from './CustomPrompt';
-import LayerBar from './LayerBar';
+import { useEffect, useState } from "react";
+import { FaSave, FaCloudDownloadAlt, FaCloudUploadAlt } from "react-icons/fa";
+import Auth from "./Auth";
+import KeyboardGrid from "./KeyboardGrid";
+import CustomPrompt from "./CustomPrompt";
+import LayerBar from "./LayerBar.tsx";
+import "./App.css";
+import type { KeyboardLayout } from "./types/KeyboardLayout.ts";
+
+const getInitialState = () => {
+  const savedLayoutJSON = localStorage.getItem("keyboardLayout");
+  if (savedLayoutJSON) {
+    try {
+      const savedLayout: KeyboardLayout = JSON.parse(savedLayoutJSON);
+      if (savedLayout.version === "1.0" && savedLayout.layers) {
+        // Return the saved state if it's valid
+        return {
+          rows: savedLayout.dimensions.rows,
+          columns: savedLayout.dimensions.columns,
+          layers: savedLayout.layers,
+        };
+      }
+    } catch (error) {
+      console.error("Can't load local layout: ", error);
+    }
+  }
+
+  const defaultRows = 4;
+  const defaultCols = 12;
+  return {
+    rows: defaultRows,
+    columns: defaultCols,
+    layers: [
+      Array(defaultRows)
+        .fill("")
+        .map(() => Array(defaultCols).fill("\u00A0".repeat(9))),
+    ],
+  };
+};
 
 function App() {
+  const [initialState] = useState(getInitialState);
 
-  const [rows, setRows] = useState(4)
-  const [columns, setColumns] = useState(12)
+  const [rows, setRows] = useState(initialState.rows);
+  const [columns, setColumns] = useState(initialState.columns);
+  const [layers, setLayers] = useState<(string | null)[][][]>(
+    initialState.layers,
+  );
+
   const [isPromptOpen, setIsPromptOpen] = useState(false);
-  const [editingCell, setEditingCell] = useState<{ rowIndex: number; colIndex: number } | null>(null);
+  const [editingCell, setEditingCell] = useState<{
+    rowIndex: number;
+    colIndex: number;
+  } | null>(null);
   const [layerIndex, setLayerIndex] = useState(0);
-  const [layers, setLayers] = useState<string[][][]>([Array(rows).fill('').map(() => Array(columns).fill('\u00A0'.repeat(9)))]);
-  const [currentLayer, setCurrentLayer] = useState<string[][]>(layers[layerIndex]);
+  const [currentLayer, setCurrentLayer] = useState<(string | null)[][]>(
+    layers[layerIndex],
+  );
 
   useEffect(() => {
     setCurrentLayer(layers[layerIndex]);
@@ -20,28 +63,58 @@ function App() {
 
   useEffect(() => {
     setLayers(prevLayers => {
+      if (!prevLayers[layerIndex]) return prevLayers;
       const newLayers = [...prevLayers];
-      newLayers[layerIndex] = currentLayer
+      newLayers[layerIndex] = currentLayer;
       return newLayers;
     });
   }, [currentLayer]);
 
-  const addLayer = () => {
-    setLayers([...layers, Array(rows).fill('').map(() => Array(columns).fill('\u00A0'.repeat(9)))])
-  }
+  const handleSaveLayout = async () => {
+    const layoutToSave: KeyboardLayout = {
+      version: "1.0",
+      lastModified: new Date().toISOString(),
+      dimensions: {
+        rows,
+        columns,
+      },
+      layers,
+    };
 
-  const removeLayer =() => {
-    if(layerIndex > 0){
-      changeLayer(layerIndex - 1);
-      let newLayers = [...layers]
-      newLayers = newLayers.splice(0, newLayers.length-1);
-      setLayers(newLayers)
+    const layoutJSON = JSON.stringify(layoutToSave, null, 2);
+
+    try {
+      localStorage.setItem("keyboardLayout", layoutJSON);
+      alert("Layout saved to browser storage!");
+    } catch (error) {
+      console.error("Failed to save layout to localStorage:", error);
+      alert("Error: Could not save layout to browser storage.");
     }
-  }
+  };
+
+  const addLayer = () => {
+    if (layers.length < 10) {
+      setLayers([
+        ...layers,
+        Array(rows)
+          .fill("")
+          .map(() => Array(columns).fill("\u00A0".repeat(9))),
+      ]);
+    }
+  };
+
+  const removeLayer = () => {
+    if (layerIndex > 0) {
+      changeLayer(layerIndex - 1);
+      let newLayers = [...layers];
+      newLayers = newLayers.splice(0, newLayers.length - 1);
+      setLayers(newLayers);
+    }
+  };
 
   const changeLayer = (index: number) => {
     setLayerIndex(index);
-  }
+  };
 
   const handleCellClick = (rowIndex: number, colIndex: number) => {
     setEditingCell({ rowIndex, colIndex });
@@ -50,18 +123,17 @@ function App() {
 
   const handleClosePrompt = () => {
     setIsPromptOpen(false);
-    setEditingCell(null); 
+    setEditingCell(null);
   };
 
-  // Function to handle saving the edited cell value
-  const handleSaveCell = (newValue: string) => {
+  const handleSaveCell = (newValue: string | null) => {
     if (editingCell) {
       setCurrentLayer(prevLayout => {
-        const newLayout = prevLayout.map(row => [...row]); 
+        const newLayout = prevLayout.map(row => [...row]);
         newLayout[editingCell.rowIndex][editingCell.colIndex] = newValue;
         return newLayout;
       });
-      setEditingCell(null); 
+      setEditingCell(null);
     }
   };
 
@@ -72,7 +144,7 @@ function App() {
     if (prevRows < 15) {
       setLayers(prevLayers => {
         const newLayers = prevLayers.map(layer => {
-          const newRow = Array(columns).fill('\u00A0'.repeat(9));
+          const newRow = Array(columns).fill("\u00A0".repeat(9));
           return [...layer, newRow];
         });
         return newLayers;
@@ -80,11 +152,11 @@ function App() {
       setRows(prevRows + 1);
       return newRows;
     }
-  }
+  };
 
   const removeRow = () => {
     const prevRows = rows;
-    const newRows = prevRows -1;
+    const newRows = prevRows - 1;
 
     if (prevRows > 0) {
       setLayers(prevLayers => {
@@ -96,7 +168,7 @@ function App() {
       setRows(prevRows - 1);
       return prevRows - 1;
     }
-  }
+  };
 
   const addColumn = () => {
     const prevCols = columns;
@@ -105,37 +177,72 @@ function App() {
     setLayers(prevLayers => {
       const newLayers = prevLayers.map(layer => {
         return layer.map(row => {
-          return [...row, '\u00A0'.repeat(9)];
+          return [...row, "\u00A0".repeat(9)];
         });
       });
       return newLayers;
     });
     setColumns(newCols);
     return newCols;
-  }
+  };
 
   const removeColumn = () => {
     const prevCols = columns;
     const newCols = Math.max(1, prevCols - 1);
 
     setLayers(prevLayers => {
-        const newLayers = prevLayers.map(layer => {
-          return layer.map(row => {
-            return row.slice(0, newCols);
-          });
+      const newLayers = prevLayers.map(layer => {
+        return layer.map(row => {
+          return row.slice(0, newCols);
         });
-        return newLayers;
       });
+      return newLayers;
+    });
     setColumns(newCols);
     return newCols;
-  }
+  };
 
-  // Determine the current value of the cell being edited for the modal
-  const currentEditingCellValue = editingCell ? currentLayer[editingCell.rowIndex][editingCell.colIndex] : '';
+  const currentEditingCellValue = editingCell
+    ? currentLayer[editingCell.rowIndex][editingCell.colIndex]
+    : null;
 
   return (
     <>
-      <LayerBar LayerChange={changeLayer} LayerCount={layers.length} CurrentLayer={layerIndex} LayerAdd={addLayer} LayerRemove={removeLayer}/>
+      <header className="app-header">
+        <h1>QMK Design</h1>
+        <div className="header-controls">
+          <button
+            onClick={handleSaveLayout}
+            className="icon-button"
+            title="Save Layout to Browser"
+          >
+            <FaSave />
+          </button>
+          <button
+            className="icon-button"
+            title="Import from Cloud (Coming Soon)"
+            disabled
+          >
+            <FaCloudDownloadAlt />
+          </button>
+          <button
+            className="icon-button"
+            title="Export to Cloud (Coming Soon)"
+            disabled
+          >
+            <FaCloudUploadAlt />
+          </button>
+          <Auth />
+        </div>
+      </header>
+
+      <LayerBar
+        LayerChange={changeLayer}
+        LayerCount={layers.length}
+        CurrentLayer={layerIndex}
+        LayerAdd={addLayer}
+        LayerRemove={removeLayer}
+      />
       <KeyboardGrid layout={currentLayer} onCellClick={handleCellClick} />
       <div>
         Rows: {rows}
@@ -145,6 +252,11 @@ function App() {
         <button onClick={addColumn}>+</button>
         <button onClick={removeColumn}>-</button>
       </div>
+
+      <div className="export-container">
+        <button className="export-button">export</button>
+      </div>
+
       <CustomPrompt
         isOpen={isPromptOpen}
         onClose={handleClosePrompt}
@@ -152,7 +264,7 @@ function App() {
         onSave={handleSaveCell}
       />
     </>
-  )
+  );
 }
 
-export default App
+export default App;

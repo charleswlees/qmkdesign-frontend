@@ -5,8 +5,8 @@
   text-align: center;
 }
 
-body{
-  font-family: 'CaskaydiaCoveNerdFont', sans-serif; /* Use the font-family name you defined */
+body {
+  font-family: "CaskaydiaCoveNerdFont", sans-serif; 
 }
 
 .logo {
@@ -22,31 +22,67 @@ body{
   filter: drop-shadow(0 0 2em #61dafbaa);
 }
 
-@keyframes logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  a:nth-of-type(2) .logo {
-    animation: logo-spin infinite 20s linear;
-  }
-}
-
-.card {
-  padding: 2em;
-}
-
-.read-the-docs {
-  color: #888;
-}
-
-.layerbar{
+.layerbar {
   width: 100%;
   background-color: grey;
   margin-bottom: 2%;
+}
+
+.app-header {
+  padding: 0.5rem 1.5rem; 
+}
+
+.header-controls {
+  display: flex;
+  gap: 0.75rem; 
+}
+
+.icon-button {
+  font-size: 1.5rem; 
+  color: #333; 
+
+  border: none;
+  padding: 8px;
+  display: flex;
+}
+.icon-button:hover {
+  background-color: #606060; 
+  color: #ffffff;
+}
+
+.icon-button:active {
+  transform: scale(0.95); 
+}
+
+.icon-button:disabled {
+  background-color: #3a3a3a;
+  color: #757575;
+  cursor: not-allowed;
+}
+
+.icon-button:disabled:hover {
+  background-color: #3a3a3a; 
+}
+
+
+.export-container {
+  margin-top: 2.5rem; 
+}
+
+.export-button {
+  padding: 12px 30px;
+  font-size: 1.1rem;
+  font-weight: bold;
+  text-transform: uppercase;
+  color: white;
+  background-color: #4caf50; 
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+.export-button:hover {
+  background-color: #45a049; 
 }
