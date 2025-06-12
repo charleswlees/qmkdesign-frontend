@@ -11,7 +11,7 @@
 .profile-container {
   display: flex;
   align-items: center;
-  gap: 5px; 
+  gap: 5px;
   background-color: rgba(40, 40, 40, 0.8);
   padding: 5px;
   padding-right: 12px;
@@ -25,10 +25,23 @@
   border-radius: 50%;
 }
 
+.profile-picture-fallback {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background-color: #4285f4;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  font-size: 14px;
+}
+
 .logout-button {
   background: none;
   border: none;
-  color: #e0e0e0; 
+  color: #e0e0e0;
   cursor: pointer;
   font-weight: bold;
   font-size: 0.9rem;
