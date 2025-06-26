@@ -4,6 +4,7 @@ import Auth from "./Auth";
 import KeyboardGrid from "./KeyboardGrid";
 import CustomPrompt from "./CustomPrompt";
 import LayerBar from "./LayerBar.tsx";
+import QMKExporter from "./QMKExporter.tsx";
 import "./App.css";
 import type { KeyboardLayout } from "./types/KeyboardLayout.ts";
 
@@ -62,7 +63,7 @@ function App() {
   }, [layerIndex, layers]);
 
   useEffect(() => {
-    setLayers(prevLayers => {
+    setLayers((prevLayers) => {
       if (!prevLayers[layerIndex]) return prevLayers;
       const newLayers = [...prevLayers];
       newLayers[layerIndex] = currentLayer;
@@ -128,8 +129,8 @@ function App() {
 
   const handleSaveCell = (newValue: string | null) => {
     if (editingCell) {
-      setCurrentLayer(prevLayout => {
-        const newLayout = prevLayout.map(row => [...row]);
+      setCurrentLayer((prevLayout) => {
+        const newLayout = prevLayout.map((row) => [...row]);
         newLayout[editingCell.rowIndex][editingCell.colIndex] = newValue;
         return newLayout;
       });
@@ -142,8 +143,8 @@ function App() {
     const newRows = prevRows + 1;
 
     if (prevRows < 15) {
-      setLayers(prevLayers => {
-        const newLayers = prevLayers.map(layer => {
+      setLayers((prevLayers) => {
+        const newLayers = prevLayers.map((layer) => {
           const newRow = Array(columns).fill("\u00A0".repeat(9));
           return [...layer, newRow];
         });
@@ -159,8 +160,8 @@ function App() {
     const newRows = prevRows - 1;
 
     if (prevRows > 0) {
-      setLayers(prevLayers => {
-        const newLayers = prevLayers.map(layer => {
+      setLayers((prevLayers) => {
+        const newLayers = prevLayers.map((layer) => {
           return layer.slice(0, newRows);
         });
         return newLayers;
@@ -174,9 +175,9 @@ function App() {
     const prevCols = columns;
     const newCols = prevCols + 1;
 
-    setLayers(prevLayers => {
-      const newLayers = prevLayers.map(layer => {
-        return layer.map(row => {
+    setLayers((prevLayers) => {
+      const newLayers = prevLayers.map((layer) => {
+        return layer.map((row) => {
           return [...row, "\u00A0".repeat(9)];
         });
       });
@@ -190,9 +191,9 @@ function App() {
     const prevCols = columns;
     const newCols = Math.max(1, prevCols - 1);
 
-    setLayers(prevLayers => {
-      const newLayers = prevLayers.map(layer => {
-        return layer.map(row => {
+    setLayers((prevLayers) => {
+      const newLayers = prevLayers.map((layer) => {
+        return layer.map((row) => {
           return row.slice(0, newCols);
         });
       });
@@ -254,7 +255,15 @@ function App() {
       </div>
 
       <div className="export-container">
-        <button className="export-button">export</button>
+        <QMKExporter
+          layout={{
+            version: "1.0",
+            lastModified: new Date().toISOString(),
+            dimensions: { rows, columns },
+            layers,
+          }}
+          keyboardName="my_custom_keyboard"
+        />
       </div>
 
       <CustomPrompt
