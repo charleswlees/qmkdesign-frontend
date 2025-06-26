@@ -16,6 +16,7 @@ export default defineConfig({
         '**/*.config.ts',
         '**/main.tsx',
       ],
+      include: ['src/**/*.{ts,tsx}'],
     },
   },
 });
