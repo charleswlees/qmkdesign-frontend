@@ -47,7 +47,7 @@ describe('QMKExporter', () => {
   });
 
   it('maps single character keys correctly', async () => {
-    const { container } = render(<QMKExporter layout={mockLayout} />);
+    render(<QMKExporter layout={mockLayout} />);
     
     // We can't easily test the zip contents, but we can ensure no errors occur
     const button = screen.getByText('Export QMK Firmware');

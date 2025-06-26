@@ -69,7 +69,7 @@ function App() {
       newLayers[layerIndex] = currentLayer;
       return newLayers;
     });
-  }, [currentLayer]);
+  }, [currentLayer, layerIndex]);
 
   const handleSaveLayout = async () => {
     const layoutToSave: KeyboardLayout = {
