@@ -249,7 +249,7 @@ const CustomPrompt: React.FC<CustomPromptProps> = ({
               maxLength={1}
               placeholder="Type a character"
             />
-            <button onClick={handleSave}>Enter</button>
+            <button onClick={handleSave}>Confirm</button>
             <button onClick={handleClear}>Clear</button>
             {/* Add the new Skip button */}
             <button onClick={handleSkip}>Skip</button>
