@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useGoogleLogin, googleLogout } from "@react-oauth/google";
 import axios from "axios";
-import "./Auth.css";
+import "../styles/Auth.css";
 
 interface UserProfile {
   name: string;

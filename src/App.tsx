@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react";
 import { FaSave, FaCloudDownloadAlt, FaCloudUploadAlt } from "react-icons/fa";
-import Auth from "./Auth";
-import KeyboardGrid from "./KeyboardGrid";
-import CustomPrompt from "./CustomPrompt";
-import LayerBar from "./LayerBar.tsx";
-import QMKExporter from "./QMKExporter.tsx";
-import "./App.css";
+import Auth from "./components/Auth";
+import KeyboardGrid from "./components/KeyboardGrid";
+import CustomPrompt from "./components/CustomPrompt";
+import LayerBar from "./components/LayerBar.tsx";
+import QMKExporter from "./components/QMKExporter.tsx";
+import './styles/App.css';
 import type { KeyboardLayout } from "./types/KeyboardLayout.ts";
 
 const getInitialState = () => {

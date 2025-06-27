@@ -1,5 +1,5 @@
 import React from "react";
-import "./KeyboardGrid.css";
+import "../styles/KeyboardGrid.css";
 
 interface KeyboardGridProps {
   layout: (string | null)[][]; // Allow null values
