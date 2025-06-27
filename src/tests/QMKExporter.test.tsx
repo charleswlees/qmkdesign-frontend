@@ -58,4 +58,24 @@ describe('QMKExporter', () => {
   });
 
 
+  it('able to export with non-standard keys being used', async () => {
+    const specialLayout: KeyboardLayout = {
+      ...mockLayout,
+      layers: [
+        [
+          ['Esc', 'Tab', 'Enter'],
+          ['Shift', 'Ctrl', 'Space'],
+        ],
+      ],
+    };
+    
+    render(<QMKExporter layout={specialLayout} />);
+    
+    const button = screen.getByText('Export QMK Firmware');
+    fireEvent.click(button);
+    
+    await waitFor(() => {
+      expect(saveAs).toHaveBeenCalled();
+    });
+  });
 });
