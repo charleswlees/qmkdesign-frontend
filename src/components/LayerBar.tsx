@@ -1,6 +1,6 @@
 import React from "react";
 import { FaPlus, FaMinus } from "react-icons/fa";
-import "./LayerBar.css"; 
+import "../styles/LayerBar.css"; 
 
 interface LayerBarProps {
   LayerCount: number;

@@ -1,5 +1,5 @@
 import React from 'react';
-import type { KeyboardLayout } from './types/KeyboardLayout';
+import type { KeyboardLayout } from '../types/KeyboardLayout';
 import { saveAs } from 'file-saver';
 import JSZip from 'jszip';
 

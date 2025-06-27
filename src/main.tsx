@@ -1,8 +1,8 @@
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import { GoogleOAuthProvider } from "@react-oauth/google";
-import "./index.css";
-import "./font.css";
+import "./styles/index.css";
+import "./styles/font.css";
 import App from "./App.tsx";
 
 // Access the environment variable

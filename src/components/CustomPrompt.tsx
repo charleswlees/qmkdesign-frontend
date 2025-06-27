@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import "./CustomPrompt.css";
+import "../styles/CustomPrompt.css";
 
 interface CustomPromptProps {
   isOpen: boolean;
