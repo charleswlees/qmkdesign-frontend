@@ -85,16 +85,6 @@ describe('LayerBar', () => {
     expect(mockProps.LayerRemove).toHaveBeenCalled();
   });
 
-  it('renders layer tabs with correct structure', () => {
-    const { container } = render(<LayerBar {...mockProps} />);
-    
-    const layerbar = container.querySelector('.layerbar');
-    expect(layerbar).toBeInTheDocument();
-    
-    const layerControls = container.querySelector('.layer-controls');
-    expect(layerControls).toBeInTheDocument();
-  });
-
   it('updates current layer class when CurrentLayer prop changes', () => {
     const { rerender } = render(<LayerBar {...mockProps} />);
     

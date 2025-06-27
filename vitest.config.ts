@@ -8,7 +8,8 @@ export default defineConfig({
     globals: true,
     setupFiles: ['./src/tests/setup.ts'],
     coverage: {
-      reporter: ['text', 'json', 'html'],
+      //reporter: ['text', 'json', 'html'],
+      reporter: ['text'],
       exclude: [
         'node_modules/',
         'src/test/',

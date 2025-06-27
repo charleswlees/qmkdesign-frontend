@@ -20,19 +20,16 @@ const LayerBar: React.FC<LayerBarProps> = ({
   const renderTabs = () => {
     const tabs = [];
     for (let i = 0; i < LayerCount; i++) {
-      // Determine if this tab is the current layer
-      const isCurrent = i === CurrentLayer;
 
-      // Add a class based on whether it's the current layer for styling
+      const isCurrent = i === CurrentLayer;
       const tabClassName = isCurrent ? "layer-tab current" : "layer-tab";
 
       tabs.push(
         <div
-          key={i} // Use index as key (assuming layers won't be reordered or deleted frequently)
+          key={i} 
           className={tabClassName}
-          onClick={() => LayerChange(i)} // Call LayerChange with the tab's index
+          onClick={() => LayerChange(i)} 
         >
-          {/* Display the layer number, often 1-based for UI */}
           Layer {i + 1}
         </div>,
       );

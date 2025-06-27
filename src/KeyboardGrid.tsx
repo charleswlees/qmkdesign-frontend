@@ -25,7 +25,7 @@ const KeyboardGrid: React.FC<KeyboardGridProps> = ({
             // Build the className string dynamically
             let keyClasses = "key";
             if (keyData === null) {
-              keyClasses += " skipped-key"; // Add our new class for null keys
+              keyClasses += " skipped-key"; 
             } else if (keyData.length > 1) {
               keyClasses += " nonstandard";
             }
