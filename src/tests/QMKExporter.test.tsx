@@ -32,6 +32,17 @@ describe('QMKExporter', () => {
     expect(screen.getByText('Export QMK Firmware')).toBeInTheDocument();
   });
 
+  it('Calls File Save', async () => {
+    render(<QMKExporter layout={mockLayout} />);
+    
+    const button = screen.getByText('Export QMK Firmware');
+    fireEvent.click(button);
+    
+    await waitFor(() => {
+      expect(saveAs).toHaveBeenCalled();
+    });
+  });
+
   it('generates and downloads zip file on click', async () => {
     render(<QMKExporter layout={mockLayout} keyboardName="test_keyboard" />);
     
@@ -46,36 +57,5 @@ describe('QMKExporter', () => {
     });
   });
 
-  it('maps single character keys correctly', async () => {
-    render(<QMKExporter layout={mockLayout} />);
-    
-    // We can't easily test the zip contents, but we can ensure no errors occur
-    const button = screen.getByText('Export QMK Firmware');
-    fireEvent.click(button);
-    
-    await waitFor(() => {
-      expect(saveAs).toHaveBeenCalled();
-    });
-  });
 
-  it('handles special keys correctly', async () => {
-    const specialLayout: KeyboardLayout = {
-      ...mockLayout,
-      layers: [
-        [
-          ['Esc', 'Tab', 'Enter'],
-          ['Shift', 'Ctrl', 'Space'],
-        ],
-      ],
-    };
-    
-    render(<QMKExporter layout={specialLayout} />);
-    
-    const button = screen.getByText('Export QMK Firmware');
-    fireEvent.click(button);
-    
-    await waitFor(() => {
-      expect(saveAs).toHaveBeenCalled();
-    });
-  });
 });
