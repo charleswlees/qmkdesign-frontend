@@ -1,6 +1,6 @@
 import { render, screen, fireEvent } from '@testing-library/react';
 import { describe, it, expect, vi } from 'vitest';
-import KeyboardGrid from '../KeyboardGrid';
+import KeyboardGrid from '../components/KeyboardGrid';
 
 describe('KeyboardGrid', () => {
   const mockLayout = [

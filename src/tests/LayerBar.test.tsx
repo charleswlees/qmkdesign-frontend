@@ -1,6 +1,6 @@
 import { render, screen, fireEvent } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import LayerBar from '../LayerBar';
+import LayerBar from '../components/LayerBar';
 
 describe('LayerBar', () => {
   const mockProps = {

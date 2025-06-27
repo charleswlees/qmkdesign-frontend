@@ -1,6 +1,6 @@
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { describe, it, expect, vi } from 'vitest';
-import QMKExporter from '../QMKExporter';
+import QMKExporter from '../components/QMKExporter';
 import { saveAs } from 'file-saver';
 import type { KeyboardLayout } from '../types/KeyboardLayout';
 
