@@ -15,6 +15,7 @@ export default defineConfig({
         '**/*.d.ts',
         '**/*.config.ts',
         '**/main.tsx',
+        '**/App.tsx',
       ],
       include: ['src/**/*.{ts,tsx}'],
     },
