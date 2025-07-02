@@ -4,18 +4,25 @@ import Auth from '../components/Auth';
 import { useGoogleLogin, googleLogout } from '@react-oauth/google';
 import axios from 'axios';
 
-// Mock the Google OAuth library
 vi.mock('@react-oauth/google', () => ({
   useGoogleLogin: vi.fn(),
   googleLogout: vi.fn(),
 }));
 
-// Mock axios
 vi.mock('axios', () => ({
   default: {
     get: vi.fn(),
   },
 }));
+
+interface GoogleLoginResponse {
+  access_token: string;
+}
+
+interface GoogleLoginError {
+  error: string;
+  error_description?: string;
+}
 
 // Mock localStorage
 const mockLocalStorage = (() => {
@@ -78,7 +85,7 @@ describe('Auth', () => {
   });
 
   it('handles login flow from start to finish', async () => {
-    let onSuccessCallback: (response: any) => void = () => {};
+    let onSuccessCallback: (response: GoogleLoginResponse) => void = () => {};
     
     (useGoogleLogin as Mock).mockImplementation((config) => {
       onSuccessCallback = config.onSuccess;
@@ -120,7 +127,7 @@ describe('Auth', () => {
   });
 
   it('handles login error', () => {
-    let onErrorCallback: (error: any) => void = () => {};
+    let onErrorCallback: (error: GoogleLoginError) => void = () => {};
     
     (useGoogleLogin as Mock).mockImplementation((config) => {
       onErrorCallback = config.onError;
@@ -129,9 +136,9 @@ describe('Auth', () => {
     
     render(<Auth />);
     
-    const error = new Error('Login failed');
-    onErrorCallback(error);
-    
+    const error: GoogleLoginError = { error: 'Login failed' };
+    onErrorCallback(error); 
+
     expect(consoleSpy).toHaveBeenCalledWith('Login Failed:', error);
   });
 
