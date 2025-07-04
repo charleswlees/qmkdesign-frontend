@@ -8,13 +8,13 @@ import QMKExporter from "./components/QMKExporter.tsx";
 import './styles/App.css';
 import type { KeyboardLayout } from "./types/KeyboardLayout.ts";
 
+//Pulling initial state from local storage if possible
 const getInitialState = () => {
   const savedLayoutJSON = localStorage.getItem("keyboardLayout");
   if (savedLayoutJSON) {
     try {
       const savedLayout: KeyboardLayout = JSON.parse(savedLayoutJSON);
-      if (savedLayout.version === "1.0" && savedLayout.layers) {
-        // Return the saved state if it's valid
+      if (savedLayout.layers) {
         return {
           rows: savedLayout.dimensions.rows,
           columns: savedLayout.dimensions.columns,
@@ -41,13 +41,11 @@ const getInitialState = () => {
 
 function App() {
   const [initialState] = useState(getInitialState);
-
   const [rows, setRows] = useState(initialState.rows);
   const [columns, setColumns] = useState(initialState.columns);
   const [layers, setLayers] = useState<(string | null)[][][]>(
     initialState.layers,
   );
-
   const [isPromptOpen, setIsPromptOpen] = useState(false);
   const [editingCell, setEditingCell] = useState<{
     rowIndex: number;
@@ -58,10 +56,12 @@ function App() {
     layers[layerIndex],
   );
 
+  //Handle Changing Active Layer
   useEffect(() => {
     setCurrentLayer(layers[layerIndex]);
   }, [layerIndex, layers]);
 
+  //Updating the state of all layers to include updated current layer
   useEffect(() => {
     setLayers((prevLayers) => {
       if (!prevLayers[layerIndex]) return prevLayers;
@@ -69,12 +69,12 @@ function App() {
       newLayers[layerIndex] = currentLayer;
       return newLayers;
     });
-  }, [currentLayer, layerIndex]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentLayer]);
 
+  //Save Layout Locally as JSON
   const handleSaveLayout = async () => {
     const layoutToSave: KeyboardLayout = {
-      version: "1.0",
-      lastModified: new Date().toISOString(),
       dimensions: {
         rows,
         columns,
@@ -93,6 +93,8 @@ function App() {
     }
   };
 
+  //Adding and Removing Layers from our Layout
+  
   const addLayer = () => {
     if (layers.length < 10) {
       setLayers([
@@ -106,28 +108,28 @@ function App() {
 
   const removeLayer = () => {
     if (layerIndex > 0) {
-      changeLayer(layerIndex - 1);
+      setLayerIndex(layerIndex - 1);
       let newLayers = [...layers];
       newLayers = newLayers.splice(0, newLayers.length - 1);
       setLayers(newLayers);
     }
   };
 
-  const changeLayer = (index: number) => {
-    setLayerIndex(index);
-  };
-
+  //Opens custom prompt on relevant cell
   const handleCellClick = (rowIndex: number, colIndex: number) => {
     setEditingCell({ rowIndex, colIndex });
     setIsPromptOpen(true);
   };
 
+  //Handles closing prompt
   const handleClosePrompt = () => {
     setIsPromptOpen(false);
     setEditingCell(null);
   };
 
+  //Updates Current Layer after saving cell
   const handleSaveCell = (newValue: string | null) => {
+    console.log("Saving Cell")
     if (editingCell) {
       setCurrentLayer((prevLayout) => {
         const newLayout = prevLayout.map((row) => [...row]);
@@ -138,6 +140,7 @@ function App() {
     }
   };
 
+  //Add a row of empty cells at the bottom of the keyboard grid UI
   const addRow = () => {
     const prevRows = rows;
     const newRows = prevRows + 1;
@@ -155,6 +158,7 @@ function App() {
     }
   };
 
+  //Remove last row from the Keyboard Grid UI
   const removeRow = () => {
     const prevRows = rows;
     const newRows = prevRows - 1;
@@ -171,6 +175,7 @@ function App() {
     }
   };
 
+  //Add an empty column to the UI
   const addColumn = () => {
     const prevCols = columns;
     const newCols = prevCols + 1;
@@ -187,6 +192,7 @@ function App() {
     return newCols;
   };
 
+  //Remove the right-most column fromt the UI
   const removeColumn = () => {
     const prevCols = columns;
     const newCols = Math.max(1, prevCols - 1);
@@ -221,14 +227,14 @@ function App() {
           </button>
           <button
             className="icon-button"
-            title="Import from Cloud (Coming Soon)"
+            title="Import from Cloud"
             disabled
           >
             <FaCloudDownloadAlt />
           </button>
           <button
             className="icon-button"
-            title="Export to Cloud (Coming Soon)"
+            title="Export to Cloud"
             disabled
           >
             <FaCloudUploadAlt />
@@ -238,7 +244,7 @@ function App() {
       </header>
 
       <LayerBar
-        LayerChange={changeLayer}
+        LayerChange={setLayerIndex}
         LayerCount={layers.length}
         CurrentLayer={layerIndex}
         LayerAdd={addLayer}
@@ -257,12 +263,9 @@ function App() {
       <div className="export-container">
         <QMKExporter
           layout={{
-            version: "1.0",
-            lastModified: new Date().toISOString(),
             dimensions: { rows, columns },
             layers,
           }}
-          keyboardName="my_custom_keyboard"
         />
       </div>
 

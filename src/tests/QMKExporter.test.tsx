@@ -11,8 +11,6 @@ vi.mock('file-saver', () => ({
 
 describe('QMKExporter', () => {
   const mockLayout: KeyboardLayout = {
-    version: '1.0',
-    lastModified: '2024-01-01T00:00:00.000Z',
     dimensions: { rows: 2, columns: 3 },
     layers: [
       [
@@ -44,7 +42,7 @@ describe('QMKExporter', () => {
   });
 
   it('generates and downloads zip file on click', async () => {
-    render(<QMKExporter layout={mockLayout} keyboardName="test_keyboard" />);
+    render(<QMKExporter layout={mockLayout} />);
     
     const button = screen.getByText('Export QMK Firmware');
     fireEvent.click(button);
@@ -52,7 +50,7 @@ describe('QMKExporter', () => {
     await waitFor(() => {
       expect(saveAs).toHaveBeenCalledWith(
         expect.any(Blob),
-        'test_keyboard_qmk_firmware.zip'
+        'custom_keyboard_qmk_firmware.zip'
       );
     });
   });

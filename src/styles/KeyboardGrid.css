@@ -25,42 +25,32 @@
 }
 
 
-/* Add these new styles to KeyboardGrid.css */
-
 .skipped-key {
-  /* This is crucial for positioning the pseudo-elements inside the key */
   position: relative;
-  /* This clips the parts of the lines that extend beyond the key's bounds */
   overflow: hidden;
-  /* Make sure no text can be accidentally selected */
   user-select: none;
 }
 
-/* This selector targets both pseudo-elements to define their common styles */
 .skipped-key::before,
 .skipped-key::after {
   content: "";
   position: absolute;
-  /* Center the line before rotating it */
   top: 50%;
   left: -15%;
-  /* Make the line wider than the key to ensure it covers the corners after rotation */
   width: 130%;
-  height: 2px; /* This is the thickness of the line */
+  height: 2px; 
   background-color: rgba(
     128,
     128,
     128,
     0.6
-  ); /* A semi-transparent gray */
+  ); 
 }
 
-/* Create the top-left to bottom-right line */
 .skipped-key::before {
   transform: rotate(45deg);
 }
 
-/* Create the top-right to bottom-left line */
 .skipped-key::after {
   transform: rotate(-45deg);
 }

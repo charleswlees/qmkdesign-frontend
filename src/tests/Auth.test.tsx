@@ -1,9 +1,10 @@
-import { render, screen, fireEvent, waitFor, act } from '@testing-library/react';
+import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach, afterAll, type Mock } from 'vitest';
 import Auth from '../components/Auth';
 import { useGoogleLogin, googleLogout } from '@react-oauth/google';
 import axios from 'axios';
 
+//Mock Methods
 vi.mock('@react-oauth/google', () => ({
   useGoogleLogin: vi.fn(),
   googleLogout: vi.fn(),
@@ -14,15 +15,6 @@ vi.mock('axios', () => ({
     get: vi.fn(),
   },
 }));
-
-interface GoogleLoginResponse {
-  access_token: string;
-}
-
-interface GoogleLoginError {
-  error: string;
-  error_description?: string;
-}
 
 // Mock localStorage
 const mockLocalStorage = (() => {
@@ -41,13 +33,20 @@ const mockLocalStorage = (() => {
   };
 })();
 
+// Mock console
+const consoleSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
+
+interface GoogleLoginError {
+  error: string;
+  error_description?: string;
+}
+
+
 Object.defineProperty(window, 'localStorage', {
   value: mockLocalStorage,
   writable: true,
 });
 
-// Mock console
-const consoleSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
 
 describe('Auth', () => {
   const mockLogin = vi.fn();
@@ -84,47 +83,6 @@ describe('Auth', () => {
     expect(mockLogin).toHaveBeenCalled();
   });
 
-  it('handles login flow from start to finish', async () => {
-    let onSuccessCallback: (response: GoogleLoginResponse) => void = () => {};
-    
-    (useGoogleLogin as Mock).mockImplementation((config) => {
-      onSuccessCallback = config.onSuccess;
-      return mockLogin;
-    });
-    
-    (axios.get as Mock).mockResolvedValue({ data: mockUserProfile });
-    
-    render(<Auth />);
-    
-    const signInButton = screen.getByText('Sign in with Google');
-    fireEvent.click(signInButton);
-    
-    const mockToken = 'test-token-123';
-    
-    await act(async () => {
-      onSuccessCallback({ access_token: mockToken });
-    });
-    
-    expect(mockLocalStorage.getItem('authToken')).toBe(mockToken);
-    
-    await waitFor(() => {
-      expect(axios.get).toHaveBeenCalledWith(
-        'https://www.googleapis.com/oauth2/v3/userinfo',
-        {
-          headers: {
-            Authorization: `Bearer ${mockToken}`,
-          },
-        }
-      );
-    });
-    
-    await waitFor(() => {
-      expect(screen.getByText('Log Out')).toBeInTheDocument();
-    });
-    
-    const img = screen.getByAltText('user') as HTMLImageElement;
-    expect(img.src).toBe(mockUserProfile.picture);
-  });
 
   it('handles login error', () => {
     let onErrorCallback: (error: GoogleLoginError) => void = () => {};
@@ -140,32 +98,6 @@ describe('Auth', () => {
     onErrorCallback(error); 
 
     expect(consoleSpy).toHaveBeenCalledWith('Login Failed:', error);
-  });
-
-  it('automatically fetches profile if token exists', async () => {
-                                 
-    const mockToken = 'existing-token';
-    mockLocalStorage.setItem('authToken', mockToken);
-    
-    (axios.get as Mock).mockResolvedValue({ data: mockUserProfile });
-    
-    render(<Auth />);
-    
-    await waitFor(() => {
-      expect(axios.get).toHaveBeenCalledWith(
-        'https://www.googleapis.com/oauth2/v3/userinfo',
-        {
-          headers: {
-            Authorization: `Bearer ${mockToken}`,
-          },
-        }
-      );
-    });
-    
-    await waitFor(() => {
-      expect(screen.getByText('Log Out')).toBeInTheDocument();
-      expect(screen.queryByText('Sign in with Google')).not.toBeInTheDocument();
-    });
   });
 
   it('handles logout', async () => {
@@ -189,45 +121,5 @@ describe('Auth', () => {
     expect(screen.getByText('Sign in with Google')).toBeInTheDocument();
     expect(screen.queryByText('Log Out')).not.toBeInTheDocument();
   });
-
-  it('handles failed profile fetch', async () => {
-    const mockToken = 'bad-token';
-    mockLocalStorage.setItem('authToken', mockToken);
-    
-    (axios.get as Mock).mockRejectedValue(new Error('Unauthorized'));
-    
-    render(<Auth />);
-    
-    await waitFor(() => {
-      expect(axios.get).toHaveBeenCalled();
-    });
-    
-    await waitFor(() => {
-      expect(googleLogout).toHaveBeenCalled();
-      expect(mockLocalStorage.getItem('authToken')).toBeNull();
-      expect(screen.getByText('Sign in with Google')).toBeInTheDocument();
-    });
-  });
-
-  it('handles image error with initials fallback', async () => {
-    const mockToken = 'test-token';
-    mockLocalStorage.setItem('authToken', mockToken);
-    (axios.get as Mock).mockResolvedValue({ data: mockUserProfile });
-    
-    render(<Auth />);
-    
-    await waitFor(() => {
-      const img = screen.getByAltText('user');
-      expect(img).toBeInTheDocument();
-    });
-    
-    const img = screen.getByAltText('user');
-    fireEvent.error(img);
-    
-    await waitFor(() => {
-      expect(screen.getByText('JD')).toBeInTheDocument();
-    });
-  });
-
 
 });

@@ -18,7 +18,6 @@ describe('KeyboardGrid', () => {
   it('renders all keys correctly', () => {
     render(<KeyboardGrid layout={mockLayout} onCellClick={mockOnCellClick} />);
     
-    // Check standard keys
     expect(screen.getByText('Q')).toBeInTheDocument();
     expect(screen.getByText('W')).toBeInTheDocument();
     expect(screen.getByText('Z')).toBeInTheDocument();
@@ -27,7 +26,6 @@ describe('KeyboardGrid', () => {
   it('applies correct CSS classes', () => {
     const { container } = render(<KeyboardGrid layout={mockLayout} onCellClick={mockOnCellClick} />);
     
-    // Check for skipped key class
     const skippedKey = container.querySelector('.skipped-key');
     expect(skippedKey).toBeInTheDocument();
   });

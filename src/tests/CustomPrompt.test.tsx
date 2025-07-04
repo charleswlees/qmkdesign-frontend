@@ -1,4 +1,4 @@
-import { render, screen, fireEvent, within } from "@testing-library/react";
+import { render, screen, fireEvent } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import CustomPrompt from "../components/CustomPrompt";
@@ -41,7 +41,7 @@ describe("CustomPrompt", () => {
     const input = screen.getByPlaceholderText("Type a character");
     await user.type(input, "b");
 
-    expect(input).toHaveValue("B"); // Should be uppercase
+    expect(input).toHaveValue("B"); 
   });
 
   it("saves typed character on Confirm button click", async () => {
@@ -129,27 +129,19 @@ describe("CustomPrompt", () => {
 
   it("clears selected key when typing", async () => {
     const user = userEvent.setup();
-    // Start with a non-standard key selected
     render(<CustomPrompt {...mockProps} currentValue="Enter" />);
 
     const input = screen.getByPlaceholderText("Type a character");
-    expect(input).toHaveValue(""); // Should be empty when non-standard key is selected
+    expect(input).toHaveValue(""); 
 
-    // Type a character
     await user.type(input, "a");
 
     expect(input).toHaveValue("A");
 
-    // The Enter button in non-standard keys should no longer be selected
-    const nonStandardSection = screen
-      .getByText("Non-Standard Keys")
-      .closest(".non-standard-keys-section");
-    if (nonStandardSection) {
-      const enterKey = within(nonStandardSection as HTMLElement).getByText(
+      const enterKey = screen.getByText(
         "Enter",
       );
       expect(enterKey).not.toHaveClass("selected");
-    }
   });
 
   it("handles null current value", () => {
@@ -176,18 +168,15 @@ describe("CustomPrompt", () => {
     ) as HTMLInputElement;
     await user.type(input, "abc");
 
-    // Should only have the first character (uppercased)
     expect(input.value.length).toBe(1);
   });
 
   it("does not save when both value and selectedKey are empty", () => {
     render(<CustomPrompt {...mockProps} currentValue="" />);
 
-    // Click Confirm without typing anything
     const confirmButton = screen.getByText("Confirm");
     fireEvent.click(confirmButton);
 
-    // Should not save or close
     expect(mockProps.onSave).not.toHaveBeenCalled();
     expect(mockProps.onClose).not.toHaveBeenCalled();
   });

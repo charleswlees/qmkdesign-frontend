@@ -8,6 +8,7 @@ interface CustomPromptProps {
   onSave: (newValue: string | null) => void; // Allow null
 }
 
+//Different Groups of non-standard keys
 const nonStandardKeys = [
   "Esc",
   "Enter",
@@ -15,8 +16,10 @@ const nonStandardKeys = [
   "Fn",
   "Shift",
   "Caps Lock",
-  "Ctrl",
-  "Alt",
+  "Left Ctrl",
+  "Right Ctrl",
+  "Left Alt",
+  "Right Alt",
   "Tab",
   "󰁮  BackSp",
   "Delete",
@@ -50,8 +53,10 @@ const nonStandardKeys_LINUX = [
   "Fn",
   "Shift",
   "Caps Lock",
-  "Ctrl",
-  "Alt",
+  "Left Ctrl",
+  "Right Ctrl",
+  "Left Alt",
+  "Right Alt",
   "Tab",
   "󰁮  BackSp",
   "Delete",
@@ -85,8 +90,10 @@ const nonStandardKeys_WIN = [
   "Fn",
   "Shift",
   "Caps Lock",
-  "Ctrl",
-  "Alt",
+  "Left Ctrl",
+  "Right Ctrl",
+  "Left Alt",
+  "Right Alt",
   "Tab",
   "󰁮  BackSp",
   "Delete",
@@ -121,7 +128,8 @@ const nonStandardKeys_MAC = [
   "Shift",
   "Caps Lock",
   "󰘴 Ctrl",
-  "󰘵 Option",
+  "󰘵 Left Option",
+  "󰘵 Right Option",
   "Tab",
   "󰁮  BackSp",
   "Delete",
@@ -148,10 +156,12 @@ const nonStandardKeys_MAC = [
   "F12",
 ];
 
+//Determine user OS and choose which non-standard key list to give them
+
+//Default is OS agnostic
 let selectedKeyLayout: string[] = nonStandardKeys;
 
 const userAgent: string = navigator.userAgent;
-
 if (userAgent.includes("Win")) {
   selectedKeyLayout = nonStandardKeys_WIN;
 } else if (userAgent.includes("Mac")) {
@@ -169,7 +179,7 @@ const CustomPrompt: React.FC<CustomPromptProps> = ({
   const [value, setValue] = useState<string>("");
   const [selectedKey, setSelectedKey] = useState<string | null>(null);
 
-  // Update the prompt's state when it opens based on the cell's current value
+  //Populate state based on input
   useEffect(() => {
     if (isOpen) {
       if (currentValue && selectedKeyLayout.includes(currentValue)) {
@@ -186,20 +196,19 @@ const CustomPrompt: React.FC<CustomPromptProps> = ({
     }
   }, [isOpen, currentValue]);
 
-  // Don't render anything if the prompt is closed
   if (!isOpen) {
     return null;
   }
 
   //Event Handlers
 
-  //Clear out the alternate selection
+  //Control the UX for typing in the textbox within the prompt
   const handleTypedInputChange = (
     event: React.ChangeEvent<HTMLInputElement>,
   ) => {
     const input = event.target.value;
     if (input.length <= 1) {
-      // Limit to one character
+      // Limit to one character and make it uppercase
       setValue(input.toUpperCase());
       setSelectedKey(null); // Clear selected non-standard key if typing
     }
@@ -220,10 +229,9 @@ const CustomPrompt: React.FC<CustomPromptProps> = ({
 
   const handleClear = () => {
     onSave("\u00A0".repeat(9));
-    onClose(); // Close the prompt after saving
+    onClose(); 
   };
 
-  // New handler for the "Skip" button
   const handleSkip = () => {
     onSave(null);
     onClose();
@@ -233,7 +241,6 @@ const CustomPrompt: React.FC<CustomPromptProps> = ({
     <div className="prompt-overlay" onClick={onClose}>
       <div className="prompt-content" onClick={e => e.stopPropagation()}>
         {" "}
-        {/* Prevent closing when clicking inside */}
         <div className="prompt-header">
           <h2>Edit Cell</h2>
           <button className="close-button" onClick={onClose}>
@@ -251,7 +258,6 @@ const CustomPrompt: React.FC<CustomPromptProps> = ({
             />
             <button onClick={handleSave}>Confirm</button>
             <button onClick={handleClear}>Clear</button>
-            {/* Add the new Skip button */}
             <button onClick={handleSkip}>Skip</button>
           </div>
           <div className="non-standard-keys-section">
