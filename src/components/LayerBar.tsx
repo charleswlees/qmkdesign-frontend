@@ -17,6 +17,7 @@ const LayerBar: React.FC<LayerBarProps> = ({
   LayerAdd,
   LayerRemove,
 }) => {
+  //Create JSX for all tabs, conditionally apply CSS based on what is the 'current' layer
   const renderTabs = () => {
     const tabs = [];
     for (let i = 0; i < LayerCount; i++) {

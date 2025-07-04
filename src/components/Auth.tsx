@@ -14,7 +14,6 @@ function Auth() {
     localStorage.getItem("authToken"),
   );
   const [profile, setProfile] = useState<UserProfile | null>(null);
-  const [imageError, setImageError] = useState(false);
 
   const login = useGoogleLogin({
     scope: "email profile openid",
@@ -38,7 +37,6 @@ function Auth() {
             },
           );
           setProfile(res.data);
-          setImageError(false); // Reset image error when getting new profile
         } catch (err) {
           console.log("Failed to fetch profile:", err);
           logOut();
@@ -54,39 +52,17 @@ function Auth() {
     localStorage.removeItem("authToken");
     setToken(null);
     setProfile(null);
-    setImageError(false);
-  };
-
-  const handleImageError = () => {
-    setImageError(true);
-  };
-
-  // Create fallback avatar with user's initials
-  const getInitials = (name: string) => {
-    return name
-      .split(" ")
-      .map(word => word[0])
-      .join("")
-      .toUpperCase()
-      .slice(0, 2);
   };
 
   return (
     <div className="auth-container">
       {profile ? (
         <div className="profile-container">
-          {!imageError ? (
             <img
               src={profile.picture}
               alt="user"
               className="profile-picture"
-              onError={handleImageError}
             />
-          ) : (
-            <div className="profile-picture-fallback">
-              {getInitials(profile.name)}
-            </div>
-          )}
           <button onClick={logOut} className="logout-button">
             Log Out
           </button>

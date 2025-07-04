@@ -2,7 +2,7 @@ import React from "react";
 import "../styles/KeyboardGrid.css";
 
 interface KeyboardGridProps {
-  layout: (string | null)[][]; // Allow null values
+  layout: (string | null)[][]; 
   onCellClick: (rowIndex: number, colIndex: number) => void;
 }
 
@@ -22,7 +22,6 @@ const KeyboardGrid: React.FC<KeyboardGridProps> = ({
       {layout.map((row, rowIndex) => (
         <React.Fragment key={rowIndex}>
           {row.map((keyData, keyIndex) => {
-            // Build the className string dynamically
             let keyClasses = "key";
             if (keyData === null) {
               keyClasses += " skipped-key"; 

@@ -7,4 +7,3 @@ Frontend for my QMK Design project which allows the user to generate QMK firmwar
 Built in React with Typescript via Vite.
 
 
-

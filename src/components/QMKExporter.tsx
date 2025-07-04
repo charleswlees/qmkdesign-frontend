@@ -5,7 +5,6 @@ import JSZip from 'jszip';
 
 interface QMKExporterProps {
   layout: KeyboardLayout;
-  keyboardName?: string;
 }
 
 interface LayoutKey {
@@ -25,7 +24,7 @@ interface InfoJson {
   };
 }
 
-const QMKExporter: React.FC<QMKExporterProps> = ({ layout, keyboardName = 'custom_keyboard' }) => {
+const QMKExporter: React.FC<QMKExporterProps> = ({ layout }) => {
   // Map special keys to QMK keycodes
   const keyToQMKCode = (key: string | null): string => {
     if (!key || key === '\u00A0'.repeat(9)) return 'KC_NO';
@@ -35,20 +34,25 @@ const QMKExporter: React.FC<QMKExporterProps> = ({ layout, keyboardName = 'custo
       return `KC_${key.toUpperCase()}`;
     }
     
-    // Map special keys to QMK codes
-    const specialKeyMap: { [key: string]: string } = {
+    // Map non-standard keys to QMK codes
+    const nonstandardKeyMap: { [key: string]: string } = {
       'Esc': 'KC_ESC',
       'Enter': 'KC_ENT',
       'Meta': 'KC_LGUI',
-      '󰘳 Command': 'KC_LGUI',
-      'Fn': 'MO(1)', // Momentary layer 1
-      ' Fn': 'MO(1)',
+      ' ': 'KC_LGUI',
+      ' ': 'KC_LWIN',
+      '󰘳 Command': 'KC_LCMD',
+      'Fn': 'MO(1)', 
+      ' Fn': 'MO(1)',
       'Shift': 'KC_LSFT',
       'Caps Lock': 'KC_CAPS',
-      'Ctrl': 'KC_LCTL',
+      'Left Ctrl': 'KC_LCTL',
+      'Right Ctrl': 'KC_RCTL',
       '󰘴 Ctrl': 'KC_LCTL',
-      'Alt': 'KC_LALT',
-      '󰘵 Option': 'KC_LALT',
+      'Left Alt': 'KC_LALT',
+      'Right Alt': 'KC_RALT',
+      '󰘵 Left Option': 'KC_LOPT',
+      '󰘵 Right Option': 'KC_ROPT',
       'Tab': 'KC_TAB',
       '󰁮  BackSp': 'KC_BSPC',
       'Delete': 'KC_DEL',
@@ -76,7 +80,7 @@ const QMKExporter: React.FC<QMKExporterProps> = ({ layout, keyboardName = 'custo
       ' ': 'KC_SPC',
     };
     
-    return specialKeyMap[key] || 'KC_NO';
+    return nonstandardKeyMap[key] || 'KC_NO';
   };
 
   const generateKeymap = (): string => {
@@ -120,9 +124,9 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 #define MATRIX_ROWS ${dimensions.rows}
 #define MATRIX_COLS ${dimensions.columns}
 
-// Matrix pins - YOU NEED TO CONFIGURE THESE FOR YOUR HARDWARE
+// Matrix pins - UPDATE ME BEFORE FLASHING
 #define MATRIX_ROW_PINS { B1, B3, B2, B6 } // Example pins
-#define MATRIX_COL_PINS { D3, D2, D1, D0, D4, C6, D7, E6, B4, B5, F4, F5 } // Example pins
+#define MATRIX_COL_PINS { D3, D2, D1, D0, D4, C6, D7, E6, B4, B5, F4, F5 } 
 
 // COL2ROW or ROW2COL
 #define DIODE_DIRECTION COL2ROW
@@ -135,12 +139,12 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 #define PRODUCT_ID      0x0000
 #define DEVICE_VER      0x0001
 #define MANUFACTURER    "Custom"
-#define PRODUCT         "${keyboardName}"
+#define PRODUCT         "custom_keyboard"
 `;
   };
 
   const generateRules = (): string => {
-    return `# MCU name - YOU NEED TO CONFIGURE THIS FOR YOUR HARDWARE
+    return `# MCU name - UPDATE ME BEFORE FLASHING
 MCU = atmega32u4
 
 # Bootloader selection
@@ -163,7 +167,7 @@ AUDIO_ENABLE = no           # Audio output
     const { dimensions } = layout;
     
     const info: InfoJson = {
-      keyboard_name: keyboardName,
+      keyboard_name: 'custom_keyboard',
       url: "",
       maintainer: "qmk",
       layouts: {
@@ -188,7 +192,7 @@ AUDIO_ENABLE = no           # Audio output
   };
 
   const generateReadme = (): string => {
-    return `# ${keyboardName}
+    return `# custom_keyboard
 
 This keyboard was generated using QMK Design tool.
 
@@ -212,10 +216,10 @@ Before compiling this firmware, you MUST:
 
 ## Compiling
 
-Place this folder in \`qmk_firmware/keyboards/${keyboardName}\` and run:
+Place this folder in \`qmk_firmware/keyboards/custom_keyboard}\` and run:
 
 \`\`\`
-qmk compile -kb ${keyboardName} -km default
+qmk compile -kb custom_keyboard -km default
 \`\`\`
 
 ## Layout Information
@@ -230,7 +234,7 @@ qmk compile -kb ${keyboardName} -km default
     const zip = new JSZip();
     
     // Create folder structure
-    const keymapFolder = zip.folder(`${keyboardName}/keymaps/default`);
+    const keymapFolder = zip.folder(`custom_keyboard/keymaps/default`);
     
     if (!keymapFolder) {
       console.error('Failed to create keymap folder');
@@ -239,14 +243,14 @@ qmk compile -kb ${keyboardName} -km default
     
     // Add files
     keymapFolder.file('keymap.c', generateKeymap());
-    zip.file(`${keyboardName}/config.h`, generateConfig());
-    zip.file(`${keyboardName}/rules.mk`, generateRules());
-    zip.file(`${keyboardName}/info.json`, generateInfoJson());
-    zip.file(`${keyboardName}/readme.md`, generateReadme());
+    zip.file(`custom_keyboard/config.h`, generateConfig());
+    zip.file(`custom_keyboard/rules.mk`, generateRules());
+    zip.file(`custom_keyboard/info.json`, generateInfoJson());
+    zip.file(`custom_keyboard/readme.md`, generateReadme());
     
     // Generate and download zip
     const blob = await zip.generateAsync({ type: 'blob' });
-    saveAs(blob, `${keyboardName}_qmk_firmware.zip`);
+    saveAs(blob, `custom_keyboard_qmk_firmware.zip`);
   };
 
   return (
