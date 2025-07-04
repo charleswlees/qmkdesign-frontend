@@ -69,6 +69,7 @@ function App() {
       newLayers[layerIndex] = currentLayer;
       return newLayers;
     });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentLayer]);
 
   //Save Layout Locally as JSON
