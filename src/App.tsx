@@ -5,6 +5,7 @@ import KeyboardGrid from "./components/KeyboardGrid";
 import CustomPrompt from "./components/CustomPrompt";
 import LayerBar from "./components/LayerBar.tsx";
 import QMKExporter from "./components/QMKExporter.tsx";
+import defaultLayout from "./components/default_layout.json"
 import './styles/App.css';
 import type { KeyboardLayout } from "./types/KeyboardLayout.ts";
 
@@ -26,16 +27,10 @@ const getInitialState = () => {
     }
   }
 
-  const defaultRows = 4;
-  const defaultCols = 12;
   return {
-    rows: defaultRows,
-    columns: defaultCols,
-    layers: [
-      Array(defaultRows)
-        .fill("")
-        .map(() => Array(defaultCols).fill("\u00A0".repeat(9))),
-    ],
+    rows: defaultLayout.dimensions.rows,
+    columns: defaultLayout.dimensions.columns,
+    layers: defaultLayout.layers,
   };
 };
 
