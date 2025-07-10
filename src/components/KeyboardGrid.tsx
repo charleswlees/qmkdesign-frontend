@@ -33,7 +33,7 @@ const KeyboardGrid: React.FC<KeyboardGridProps> = ({
             let keyClasses = "key";
             if (keyData === null) {
               keyClasses += " skipped-key"; 
-            } else if (keyData.value !== null && keyData.value.length > 1) {
+            } else if (value.length > 1) {
               keyClasses += " nonstandard";
             }
 
