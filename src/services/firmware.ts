@@ -67,8 +67,8 @@ const mapKeys = (key: string | null): string => {
 //Geneates JSON that we'll send to the backend with our keymap
 function GenerateQMKLayout(layout: (KeyInfo | null)[][][]): QMKLayout {
 
-  let finalLayout: QMKLayout = { layers: [] }
-  let currentLayout = structuredClone(layout)
+  const finalLayout: QMKLayout = { layers: [] }
+  const currentLayout = structuredClone(layout)
 
   //Iterate through layout and generate our QMK compatible key layout
   for (let j = 0; j < currentLayout[0].length; j++) {

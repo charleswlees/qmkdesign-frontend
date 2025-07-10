@@ -19,7 +19,6 @@ function Auth() {
     onSuccess: tokenResponse => {
       localStorage.setItem("authToken", tokenResponse.access_token);
       setToken(tokenResponse.access_token);
-      setProfile
     },
     onError: error => console.log("Login Failed:", error),
   });
