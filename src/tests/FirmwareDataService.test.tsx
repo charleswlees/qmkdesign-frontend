@@ -4,8 +4,7 @@ import FirmwareDataService from '../services/firmware'
 
 vi.mock('axios')
 
-const mockedAxios = axios as any;
-
+const mockedAxios = axios as any; // eslint-disable-line @typescript-eslint/no-explicit-any
 describe("FirmwareDataService", () => {
   const mockLayout = [[
     [
