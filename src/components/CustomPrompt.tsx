@@ -4,8 +4,8 @@ import "../styles/CustomPrompt.css";
 interface CustomPromptProps {
   isOpen: boolean;
   onClose: () => void;
-  currentValue: string | null; // Allow null
-  onSave: (newValue: string | null) => void; // Allow null
+  currentValue: string | null; 
+  onSave: (newValue: string | null) => void; 
 }
 
 //Different Groups of non-standard keys
@@ -13,7 +13,6 @@ const nonStandardKeys = [
   "Esc",
   "Enter",
   "Meta",
-  "Fn",
   "Shift",
   "Caps Lock",
   "Left Ctrl",
@@ -50,7 +49,6 @@ const nonStandardKeys_LINUX = [
   "Esc",
   "Enter",
   " ",
-  "Fn",
   "Shift",
   "Caps Lock",
   "Left Ctrl",
@@ -87,7 +85,6 @@ const nonStandardKeys_WIN = [
   "Esc",
   "Enter",
   " ",
-  "Fn",
   "Shift",
   "Caps Lock",
   "Left Ctrl",
@@ -124,7 +121,6 @@ const nonStandardKeys_MAC = [
   "Esc",
   "Enter",
   "󰘳 Command",
-  " Fn",
   "Shift",
   "Caps Lock",
   "󰘴 Ctrl",

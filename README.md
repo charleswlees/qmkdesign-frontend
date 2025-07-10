@@ -16,5 +16,9 @@ I have listed some below that were noteworthy:
 * [vite](https://vite.dev/guide/)
 * [vitest](https://vitest.dev/guide/)
 * [React](https://react.dev/reference/react)
+* [QMK](https://docs.qmk.fm/newbs_building_firmware)
+* [Google OAuth](https://www.npmjs.com/package/@react-oauth/google)
+    * [Google OAuth User Info](https://developers.google.com/identity/protocols/oauth2)
+    
 
 

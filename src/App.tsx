@@ -4,10 +4,12 @@ import Auth from "./components/Auth";
 import KeyboardGrid from "./components/KeyboardGrid";
 import CustomPrompt from "./components/CustomPrompt";
 import LayerBar from "./components/LayerBar.tsx";
-import QMKExporter from "./components/QMKExporter.tsx";
-import defaultLayout from "./components/default_layout.json"
-import './styles/App.css';
+import defaultLayout from "./components/default_layout.json";
+import keyboardPresets from "./components/keyboard_list.json";
+import "./styles/App.css";
+import FirmwareDataService from "./services/firmware.ts"
 import type { KeyboardLayout } from "./types/KeyboardLayout.ts";
+import type { KeyInfo } from "./types/KeyboardLayout.ts";
 
 //Pulling initial state from local storage if possible
 const getInitialState = () => {
@@ -36,9 +38,10 @@ const getInitialState = () => {
 
 function App() {
   const [initialState] = useState(getInitialState);
+  const [keyboardName, setKeyboardName] = useState("zsa/planck_ez");
   const [rows, setRows] = useState(initialState.rows);
   const [columns, setColumns] = useState(initialState.columns);
-  const [layers, setLayers] = useState<(string | null)[][][]>(
+  const [layers, setLayers] = useState<(KeyInfo | null)[][][]>(
     initialState.layers,
   );
   const [isPromptOpen, setIsPromptOpen] = useState(false);
@@ -47,7 +50,7 @@ function App() {
     colIndex: number;
   } | null>(null);
   const [layerIndex, setLayerIndex] = useState(0);
-  const [currentLayer, setCurrentLayer] = useState<(string | null)[][]>(
+  const [currentLayer, setCurrentLayer] = useState<(KeyInfo | null)[][]>(
     layers[layerIndex],
   );
 
@@ -66,6 +69,38 @@ function App() {
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentLayer]);
+
+  //Handle changing the keyboard preset
+  const handleKeyboardChange = (newKeyboardName: string) => {
+    //Grab the details from the json
+    const selectedKeyboard = keyboardPresets.keyboards.find(
+      (kb) => kb.name === newKeyboardName,
+    );
+
+    if (selectedKeyboard) {
+      //Update state
+      setKeyboardName(selectedKeyboard.name);
+      setRows(selectedKeyboard.rows);
+      setColumns(selectedKeyboard.columns);
+
+      //Clear current layout
+      
+      const newLayers = 
+      [
+      Array(selectedKeyboard.rows)
+        .fill(null)
+        .map(() => 
+          Array(selectedKeyboard.columns)
+            .fill(null)
+            .map(() => ({ value: "\u00A0".repeat(9), span: 1}))
+            ),
+      ];
+      
+      
+      setLayers(newLayers);
+      setLayerIndex(0);
+    }
+  };
 
   //Save Layout Locally as JSON
   const handleSaveLayout = async () => {
@@ -89,7 +124,7 @@ function App() {
   };
 
   //Adding and Removing Layers from our Layout
-  
+
   const addLayer = () => {
     if (layers.length < 10) {
       setLayers([
@@ -124,88 +159,20 @@ function App() {
 
   //Updates Current Layer after saving cell
   const handleSaveCell = (newValue: string | null) => {
-    console.log("Saving Cell")
+    console.log("Saving Cell");
     if (editingCell) {
       setCurrentLayer((prevLayout) => {
         const newLayout = prevLayout.map((row) => [...row]);
-        newLayout[editingCell.rowIndex][editingCell.colIndex] = newValue;
+        newLayout[editingCell.rowIndex][editingCell.colIndex] = {value: newValue, span: prevLayout[editingCell.rowIndex][editingCell.colIndex]?.span ?? 1};
         return newLayout;
       });
       setEditingCell(null);
     }
   };
 
-  //Add a row of empty cells at the bottom of the keyboard grid UI
-  const addRow = () => {
-    const prevRows = rows;
-    const newRows = prevRows + 1;
-
-    if (prevRows < 15) {
-      setLayers((prevLayers) => {
-        const newLayers = prevLayers.map((layer) => {
-          const newRow = Array(columns).fill("\u00A0".repeat(9));
-          return [...layer, newRow];
-        });
-        return newLayers;
-      });
-      setRows(prevRows + 1);
-      return newRows;
-    }
-  };
-
-  //Remove last row from the Keyboard Grid UI
-  const removeRow = () => {
-    const prevRows = rows;
-    const newRows = prevRows - 1;
-
-    if (prevRows > 0) {
-      setLayers((prevLayers) => {
-        const newLayers = prevLayers.map((layer) => {
-          return layer.slice(0, newRows);
-        });
-        return newLayers;
-      });
-      setRows(prevRows - 1);
-      return prevRows - 1;
-    }
-  };
-
-  //Add an empty column to the UI
-  const addColumn = () => {
-    const prevCols = columns;
-    const newCols = prevCols + 1;
-
-    setLayers((prevLayers) => {
-      const newLayers = prevLayers.map((layer) => {
-        return layer.map((row) => {
-          return [...row, "\u00A0".repeat(9)];
-        });
-      });
-      return newLayers;
-    });
-    setColumns(newCols);
-    return newCols;
-  };
-
-  //Remove the right-most column fromt the UI
-  const removeColumn = () => {
-    const prevCols = columns;
-    const newCols = Math.max(1, prevCols - 1);
-
-    setLayers((prevLayers) => {
-      const newLayers = prevLayers.map((layer) => {
-        return layer.map((row) => {
-          return row.slice(0, newCols);
-        });
-      });
-      return newLayers;
-    });
-    setColumns(newCols);
-    return newCols;
-  };
 
   const currentEditingCellValue = editingCell
-    ? currentLayer[editingCell.rowIndex][editingCell.colIndex]
+    ? currentLayer[editingCell.rowIndex][editingCell.colIndex]?.value ?? null
     : null;
 
   return (
@@ -220,18 +187,10 @@ function App() {
           >
             <FaSave />
           </button>
-          <button
-            className="icon-button"
-            title="Import from Cloud"
-            disabled
-          >
+          <button className="icon-button" title="Import from Cloud" disabled>
             <FaCloudDownloadAlt />
           </button>
-          <button
-            className="icon-button"
-            title="Export to Cloud"
-            disabled
-          >
+          <button className="icon-button" title="Export to Cloud" disabled>
             <FaCloudUploadAlt />
           </button>
           <Auth />
@@ -246,22 +205,27 @@ function App() {
         LayerRemove={removeLayer}
       />
       <KeyboardGrid layout={currentLayer} onCellClick={handleCellClick} />
-      <div>
-        Rows: {rows}
-        <button onClick={addRow}>+</button>
-        <button onClick={removeRow}>-</button>
-        Columns: {columns}
-        <button onClick={addColumn}>+</button>
-        <button onClick={removeColumn}>-</button>
-      </div>
 
+      <div className="keyboard-dropdown">
+        <p>Suported Keyboards</p>
+        <select
+          id="keyboard-list"
+          value={keyboardName}
+          onChange={(choice) => handleKeyboardChange(choice.target.value)}
+          className="keyboard-dropdown"
+        >
+          {keyboardPresets.keyboards.map((keyboard) => (
+            <option key={keyboard.name} value={keyboard.name}>
+              {keyboard.name}
+            </option>
+          ))}
+        </select>
+      </div>
       <div className="export-container">
-        <QMKExporter
-          layout={{
-            dimensions: { rows, columns },
-            layers,
-          }}
-        />
+        <a
+        onClick={() => FirmwareDataService.getFirmware(layers, keyboardName)}>
+        Export QMK Firmware
+        </a>
       </div>
 
       <CustomPrompt
