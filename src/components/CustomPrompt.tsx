@@ -4,8 +4,8 @@ import "../styles/CustomPrompt.css";
 interface CustomPromptProps {
   isOpen: boolean;
   onClose: () => void;
-  currentValue: string | null; // Allow null
-  onSave: (newValue: string | null) => void; // Allow null
+  currentValue: string | null; 
+  onSave: (newValue: string | null) => void; 
 }
 
 //Different Groups of non-standard keys

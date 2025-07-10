@@ -4,11 +4,11 @@ import Auth from "./components/Auth";
 import KeyboardGrid from "./components/KeyboardGrid";
 import CustomPrompt from "./components/CustomPrompt";
 import LayerBar from "./components/LayerBar.tsx";
-import QMKExporter from "./components/QMKExporter.tsx";
 import defaultLayout from "./components/default_layout.json";
 import keyboardPresets from "./components/keyboard_list.json";
 import "./styles/App.css";
 import type { KeyboardLayout } from "./types/KeyboardLayout.ts";
+import type { KeyInfo } from "./types/KeyboardLayout.ts";
 
 //Pulling initial state from local storage if possible
 const getInitialState = () => {
@@ -40,7 +40,7 @@ function App() {
   const [keyboardName, setKeyboardName] = useState("zsa/planck_ez");
   const [rows, setRows] = useState(initialState.rows);
   const [columns, setColumns] = useState(initialState.columns);
-  const [layers, setLayers] = useState<(string | null)[][][]>(
+  const [layers, setLayers] = useState<(KeyInfo | null)[][][]>(
     initialState.layers,
   );
   const [isPromptOpen, setIsPromptOpen] = useState(false);
@@ -49,7 +49,7 @@ function App() {
     colIndex: number;
   } | null>(null);
   const [layerIndex, setLayerIndex] = useState(0);
-  const [currentLayer, setCurrentLayer] = useState<(string | null)[][]>(
+  const [currentLayer, setCurrentLayer] = useState<(KeyInfo | null)[][]>(
     layers[layerIndex],
   );
 
@@ -83,13 +83,19 @@ function App() {
       setColumns(selectedKeyboard.columns);
 
       //Clear current layout
-      //TODO: Instead of clearing it, replace it with a default
+      
       const newLayers = 
-        [
-        Array(selectedKeyboard.rows)
-        .fill("")
-        .map(() => Array(selectedKeyboard.columns).fill("\u00A0".repeat(9))),
-        ]
+      [
+      Array(selectedKeyboard.rows)
+        .fill(null)
+        .map(() => 
+          Array(selectedKeyboard.columns)
+            .fill(null)
+            .map(() => ({ value: "\u00A0".repeat(9), span: 1}))
+            ),
+      ];
+      
+      
       setLayers(newLayers);
       setLayerIndex(0);
     }
@@ -156,7 +162,7 @@ function App() {
     if (editingCell) {
       setCurrentLayer((prevLayout) => {
         const newLayout = prevLayout.map((row) => [...row]);
-        newLayout[editingCell.rowIndex][editingCell.colIndex] = newValue;
+        newLayout[editingCell.rowIndex][editingCell.colIndex] = {value: newValue, span: prevLayout[editingCell.rowIndex][editingCell.colIndex]?.span ?? 1};
         return newLayout;
       });
       setEditingCell(null);
@@ -165,7 +171,7 @@ function App() {
 
 
   const currentEditingCellValue = editingCell
-    ? currentLayer[editingCell.rowIndex][editingCell.colIndex]
+    ? currentLayer[editingCell.rowIndex][editingCell.colIndex]?.value ?? null
     : null;
 
   return (
@@ -215,12 +221,9 @@ function App() {
         </select>
       </div>
       <div className="export-container">
-        <QMKExporter
-          layout={{
-            dimensions: { rows, columns },
-            layers,
-          }}
-        />
+        <a>
+        Export QMK Firmware
+        </a>
       </div>
 
       <CustomPrompt

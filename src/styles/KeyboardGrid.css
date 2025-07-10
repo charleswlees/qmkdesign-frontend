@@ -54,3 +54,8 @@
 .skipped-key::after {
   transform: rotate(-45deg);
 }
+
+.spanning-key {
+  aspect-ratio: unset;
+  height: auto;
+}

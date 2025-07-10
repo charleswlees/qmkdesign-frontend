@@ -1,8 +1,9 @@
 import React from "react";
 import "../styles/KeyboardGrid.css";
+import type { KeyInfo } from "../types/KeyboardLayout";
 
 interface KeyboardGridProps {
-  layout: (string | null)[][]; 
+  layout: (KeyInfo | null)[][]; 
   onCellClick: (rowIndex: number, colIndex: number) => void;
 }
 
@@ -22,20 +23,34 @@ const KeyboardGrid: React.FC<KeyboardGridProps> = ({
       {layout.map((row, rowIndex) => (
         <React.Fragment key={rowIndex}>
           {row.map((keyData, keyIndex) => {
+
+            let value : string = "";
+            let span : number = 0;
+            if(keyData){
+              value = keyData?.value ?? ""
+              span = keyData?.span ?? 1
+            }
             let keyClasses = "key";
             if (keyData === null) {
               keyClasses += " skipped-key"; 
-            } else if (keyData.length > 1) {
+            } else if (keyData.value !== null && keyData.value.length > 1) {
               keyClasses += " nonstandard";
+            }
+
+            if (span > 1) {
+              keyClasses += " spanning-key";
             }
 
             return (
               <div
                 key={`${rowIndex}-${keyIndex}`}
                 className={keyClasses}
+                style={{
+                  gridColumn: span > 1 ? `span ${span}` : undefined,
+                }}
                 onClick={() => onCellClick(rowIndex, keyIndex)}
               >
-                {keyData}
+                {keyData?.value ?? ''}
               </div>
             );
           })}
