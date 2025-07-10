@@ -16,5 +16,7 @@ I have listed some below that were noteworthy:
 * [vite](https://vite.dev/guide/)
 * [vitest](https://vitest.dev/guide/)
 * [React](https://react.dev/reference/react)
+* [QMK](https://docs.qmk.fm/newbs_building_firmware)
+    
 
 

@@ -1,0 +1,15 @@
+{
+  "keyboards":[
+    {
+      "name": "zsa/planck_ez",
+      "columns": 12,
+      "rows": 4
+    },
+    {
+      "name": "zsa/planck_ez_test",
+      "columns": 13,
+      "rows": 4
+    }
+  ]
+  
+}
