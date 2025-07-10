@@ -16,10 +16,10 @@ function Auth() {
   const [profile, setProfile] = useState<UserProfile | null>(null);
 
   const login = useGoogleLogin({
-    scope: "email profile openid",
     onSuccess: tokenResponse => {
       localStorage.setItem("authToken", tokenResponse.access_token);
       setToken(tokenResponse.access_token);
+      setProfile
     },
     onError: error => console.log("Login Failed:", error),
   });

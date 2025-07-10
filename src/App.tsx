@@ -7,6 +7,7 @@ import LayerBar from "./components/LayerBar.tsx";
 import defaultLayout from "./components/default_layout.json";
 import keyboardPresets from "./components/keyboard_list.json";
 import "./styles/App.css";
+import FirmwareDataService from "./services/firmware.ts"
 import type { KeyboardLayout } from "./types/KeyboardLayout.ts";
 import type { KeyInfo } from "./types/KeyboardLayout.ts";
 
@@ -221,7 +222,8 @@ function App() {
         </select>
       </div>
       <div className="export-container">
-        <a>
+        <a
+        onClick={() => FirmwareDataService.getFirmware(layers, keyboardName)}>
         Export QMK Firmware
         </a>
       </div>
