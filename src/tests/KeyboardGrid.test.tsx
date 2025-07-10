@@ -4,9 +4,23 @@ import KeyboardGrid from '../components/KeyboardGrid';
 
 describe('KeyboardGrid', () => {
   const mockLayout = [
-    ['Q', 'W', 'E', 'R'],
-    ['A', 'S', 'D', 'F'],
-    [null, 'Z', 'X', 'C'],
+    [
+      {value: 'Q', span: 1}, 
+      {value: 'W', span: 1}, 
+      {value: 'E', span: 1}, 
+      {value: 'R', span: 1}
+    ],
+    [
+      {value: 'A', span: 1}, 
+      {value: 'S', span: 1}, 
+      {value: 'D', span: 1}, 
+      {value: 'F', span: 1}],
+    [
+      null,
+      {value: 'Z', span: 1}, 
+      {value: 'X', span: 1}, 
+      {value: 'C', span: 1}
+    ],
   ];
 
   const mockOnCellClick = vi.fn();
