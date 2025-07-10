@@ -60,7 +60,7 @@ const mapKeys = (key: string | null): string => {
     ' ': 'KC_SPC',
   };
 
-  return nonstandardKeyMap[key] || 'KC_NO';
+  return nonstandardKeyMap[key];
 };
 
 
