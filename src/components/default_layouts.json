@@ -66,13 +66,30 @@
       }
     },
     {
-      "name": "zsa/planck_ez_test",
+      "name": "cannonkeys/moment",
       "layout": {
-        "dimensions": { "rows": 4, "columns": 12 },
+        "dimensions": { "rows": 5, "columns": 15 },
         "layers": [
           [
             [
-              null,
+              { "value": "Esc", "span": 1 },
+              { "value": "1", "span": 1 },
+              { "value": "2", "span": 1 },
+              { "value": "3", "span": 1 },
+              { "value": "4", "span": 1 },
+              { "value": "5", "span": 1 },
+              { "value": "6", "span": 1 },
+              { "value": "7", "span": 1 },
+              { "value": "8", "span": 1 },
+              { "value": "9", "span": 1 },
+              { "value": "0", "span": 1 },
+              { "value": "-", "span": 1 },
+              { "value": "=", "span": 1 },
+              { "value": "󰁮  BackSp", "span": 1 },
+              { "value": "Delete", "span": 1 }
+            ],
+            [
+              { "value": "Tab", "span": 2 },
               { "value": "Q", "span": 1 },
               { "value": "W", "span": 1 },
               { "value": "E", "span": 1 },
@@ -83,10 +100,12 @@
               { "value": "I", "span": 1 },
               { "value": "O", "span": 1 },
               { "value": "P", "span": 1 },
-              { "value": "󰁮  BackSp", "span": 1 }
+              { "value": "[", "span": 1 },
+              { "value": "]", "span": 1 },
+              { "value": "\\", "span": 1 }
             ],
             [
-              { "value": "Esc", "span": 1 },
+              { "value": "Caps Lock", "span": 2 },
               { "value": "A", "span": 1 },
               { "value": "S", "span": 1 },
               { "value": "D", "span": 1 },
@@ -97,10 +116,12 @@
               { "value": "K", "span": 1 },
               { "value": "L", "span": 1 },
               { "value": ";", "span": 1 },
-              { "value": "'", "span": 1 }
+              { "value": "'", "span": 1 },
+              { "value": "Enter", "span": 2 }
             ],
             [
               { "value": "Shift", "span": 1 },
+              { "value": "\\", "span": 1 },
               { "value": "Z", "span": 1 },
               { "value": "X", "span": 1 },
               { "value": "C", "span": 1 },
@@ -111,20 +132,17 @@
               { "value": ",", "span": 1 },
               { "value": ".", "span": 1 },
               { "value": "/", "span": 1 },
-              { "value": "Enter", "span": 1 }
+              { "value": "Shift", "span": 2 },
+              null
             ],
             [
-              null,
               { "value": "󰘴 Ctrl", "span": 1 },
-              { "value": "󰘵 Left Option", "span": 1 },
               { "value": "󰘳 Command", "span": 1 },
-              null,
-              { "value": "Tab", "span": 2 },
-              null,
-              { "value": "Left", "span": 1 },
-              { "value": "Down", "span": 1 },
-              { "value": "Up", "span": 1 },
-              { "value": "Right", "span": 1 }
+              { "value": "󰘵 Left Option", "span": 1 },
+              { "value": "Space", "span": 9 },
+              { "value": "󰘵 Right Option", "span": 1 },
+              { "value": "󰘳 Command", "span": 1 },
+              { "value": "󰘴 Ctrl", "span": 1 }
             ]
           ]
         ]
