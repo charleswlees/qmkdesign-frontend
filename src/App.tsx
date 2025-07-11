@@ -5,9 +5,10 @@ import KeyboardGrid from "./components/KeyboardGrid";
 import CustomPrompt from "./components/CustomPrompt";
 import LayerBar from "./components/LayerBar.tsx";
 import defaultLayout from "./components/default_layout.json";
-import keyboardPresets from "./components/keyboard_list.json";
+import defaultLayouts from "./components/default_layouts.json";
+import keyboardInfo from "./components/keyboard_list.json";
 import "./styles/App.css";
-import FirmwareDataService from "./services/firmware.ts"
+import FirmwareDataService from "./services/firmware.ts";
 import type { KeyboardLayout } from "./types/KeyboardLayout.ts";
 import type { KeyInfo } from "./types/KeyboardLayout.ts";
 
@@ -73,7 +74,7 @@ function App() {
   //Handle changing the keyboard preset
   const handleKeyboardChange = (newKeyboardName: string) => {
     //Grab the details from the json
-    const selectedKeyboard = keyboardPresets.keyboards.find(
+    const selectedKeyboard = keyboardInfo.keyboards.find(
       (kb) => kb.name === newKeyboardName,
     );
 
@@ -83,21 +84,31 @@ function App() {
       setRows(selectedKeyboard.rows);
       setColumns(selectedKeyboard.columns);
 
-      //Clear current layout
-      
-      const newLayers = 
-      [
-      Array(selectedKeyboard.rows)
-        .fill(null)
-        .map(() => 
-          Array(selectedKeyboard.columns)
-            .fill(null)
-            .map(() => ({ value: "\u00A0".repeat(9), span: 1}))
-            ),
-      ];
-      
-      
-      setLayers(newLayers);
+      //Set layout to default for new keyboard
+      let newLayers = defaultLayouts.layouts.find(
+        (layout) => layout.name === selectedKeyboard.name,
+      );
+
+      //Null Check / Default Empty Keymap
+      if (!newLayers || !newLayers.layout || !newLayers.layout.layers) {
+        newLayers = {
+          name: "zsa/planck_ez",
+          layout: {
+            dimensions: { rows: 4, columns: 12 },
+            layers: [
+              Array(selectedKeyboard.rows)
+                .fill(null)
+                .map(() =>
+                  Array(selectedKeyboard.columns)
+                    .fill(null)
+                    .map(() => ({ value: "\u00A0".repeat(9), span: 1 })),
+                ),
+            ],
+          },
+        };
+      }
+
+      setLayers(newLayers.layout.layers);
       setLayerIndex(0);
     }
   };
@@ -163,16 +174,19 @@ function App() {
     if (editingCell) {
       setCurrentLayer((prevLayout) => {
         const newLayout = prevLayout.map((row) => [...row]);
-        newLayout[editingCell.rowIndex][editingCell.colIndex] = {value: newValue, span: prevLayout[editingCell.rowIndex][editingCell.colIndex]?.span ?? 1};
+        newLayout[editingCell.rowIndex][editingCell.colIndex] = {
+          value: newValue,
+          span:
+            prevLayout[editingCell.rowIndex][editingCell.colIndex]?.span ?? 1,
+        };
         return newLayout;
       });
       setEditingCell(null);
     }
   };
 
-
   const currentEditingCellValue = editingCell
-    ? currentLayer[editingCell.rowIndex][editingCell.colIndex]?.value ?? null
+    ? (currentLayer[editingCell.rowIndex][editingCell.colIndex]?.value ?? null)
     : null;
 
   return (
@@ -214,7 +228,7 @@ function App() {
           onChange={(choice) => handleKeyboardChange(choice.target.value)}
           className="keyboard-dropdown"
         >
-          {keyboardPresets.keyboards.map((keyboard) => (
+          {keyboardInfo.keyboards.map((keyboard) => (
             <option key={keyboard.name} value={keyboard.name}>
               {keyboard.name}
             </option>
@@ -223,8 +237,9 @@ function App() {
       </div>
       <div className="export-container">
         <a
-        onClick={() => FirmwareDataService.getFirmware(layers, keyboardName)}>
-        Export QMK Firmware
+          onClick={() => FirmwareDataService.getFirmware(layers, keyboardName)}
+        >
+          Export QMK Firmware
         </a>
       </div>
 
