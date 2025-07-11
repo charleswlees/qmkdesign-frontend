@@ -4,7 +4,7 @@ import Auth from "./components/Auth";
 import KeyboardGrid from "./components/KeyboardGrid";
 import CustomPrompt from "./components/CustomPrompt";
 import LayerBar from "./components/LayerBar.tsx";
-import defaultLayout from "./components/default_layout.json";
+import initialLayout from "./components/initial_layout.json";
 import defaultLayouts from "./components/default_layouts.json";
 import keyboardInfo from "./components/keyboard_list.json";
 import "./styles/App.css";
@@ -31,9 +31,9 @@ const getInitialState = () => {
   }
 
   return {
-    rows: defaultLayout.dimensions.rows,
-    columns: defaultLayout.dimensions.columns,
-    layers: defaultLayout.layers,
+    rows: initialLayout.dimensions.rows,
+    columns: initialLayout.dimensions.columns,
+    layers: initialLayout.layers,
   };
 };
 
