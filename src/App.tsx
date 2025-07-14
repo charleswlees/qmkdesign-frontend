@@ -13,7 +13,7 @@ import type { KeyboardLayout } from "./types/KeyboardLayout.ts";
 import type { KeyInfo } from "./types/KeyboardLayout.ts";
 
 //Pulling initial state from local storage if possible
-const getInitialState = () => {
+const getInitialLayout = () => {
   const savedLayoutJSON = localStorage.getItem("keyboardLayout");
   if (savedLayoutJSON) {
     try {
@@ -38,8 +38,8 @@ const getInitialState = () => {
 };
 
 function App() {
-  const [initialState] = useState(getInitialState);
-  const [keyboardName, setKeyboardName] = useState("zsa/planck_ez");
+  const [initialState] = useState(getInitialLayout);
+  const [keyboardName, setKeyboardName] = useState(localStorage.getItem("keyboardName") ?? "zsa/planck_ez");
   const [rows, setRows] = useState(initialState.rows);
   const [columns, setColumns] = useState(initialState.columns);
   const [layers, setLayers] = useState<(KeyInfo | null)[][][]>(
@@ -127,6 +127,7 @@ function App() {
 
     try {
       localStorage.setItem("keyboardLayout", layoutJSON);
+      localStorage.setItem("keyboardName", keyboardName)
       alert("Layout saved to browser storage!");
     } catch (error) {
       console.error("Failed to save layout to localStorage:", error);
