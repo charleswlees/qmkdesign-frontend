@@ -143,7 +143,9 @@ function App() {
         ...layers,
         Array(rows)
           .fill("")
-          .map(() => Array(columns).fill("\u00A0".repeat(9))),
+          .map(() => Array(columns).fill(
+            {value: "\u00A0".repeat(5), span: 1}
+          )),
       ]);
     }
   };
