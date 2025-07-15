@@ -74,10 +74,11 @@ describe("FirmwareDataService", () => {
     expect(axios.put).toHaveBeenCalledWith(
       `${baseURL}/firmware/testkeyboard`,
       {
+        keyboard: "testkeyboard",
+        keymap:"default",
+        layout: "LAYOUT_all",
         layers: [
-          ['KC_Q', 'KC_W', 'KC_E', 'KC_R'],
-          ['KC_A', 'KC_LSFT', 'KC_LGUI', 'KC_F'],
-          ['KC_NO', 'KC_Z', 'KC_X', 'KC_C']
+          ['KC_Q', 'KC_W', 'KC_E', 'KC_R', 'KC_A', 'KC_LSFT', 'KC_LGUI', 'KC_F', 'KC_NO', 'KC_Z', 'KC_X', 'KC_C']
         ]
       },
       { responseType: 'blob' }
