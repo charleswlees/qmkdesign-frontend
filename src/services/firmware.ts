@@ -2,6 +2,9 @@ import type { KeyInfo } from "../types/KeyboardLayout";
 import axios from "axios";
 
 interface QMKLayout {
+  keyboard: string,
+  keymap: string,
+  layout: string,
   layers: string[][]
 }
 
@@ -9,8 +12,8 @@ interface QMKLayout {
 const mapKeys = (key: string | null): string => {
   if (!key || key === '\u00A0'.repeat(9)) return 'KC_NO';
 
-  // Handle single character keys
-  if (key.length === 1) {
+  // Handle single character letters and numbers
+  if (key.length === 1 && /^[a-zA-Z0-9]$/.test(key)){
     return `KC_${key.toUpperCase()}`;
   }
 
@@ -58,6 +61,29 @@ const mapKeys = (key: string | null): string => {
     'F11': 'KC_F11',
     'F12': 'KC_F12',
     ' ': 'KC_SPC',
+    //Special Characters
+    ';': 'KC_SCLN',
+    ':': 'KC_SCLN',
+    "'": 'KC_QUOTE',
+    '"': 'KC_QUOTE',
+    '`': 'KC_GRAVE',
+    '~': 'KC_GRAVE',
+    ',': 'KC_COMMA',
+    '<': 'KC_COMMA',
+    '.': 'KC_DOT',
+    '>': 'KC_DOT',
+    '/': 'KC_SLASH',
+    '?': 'KC_SLASH',
+    '\\': 'KC_BACKSLASH',
+    '|': 'KC_BACKSLASH',
+    '-': 'KC_MINUS',
+    '_': 'KC_MINUS',
+    '=': 'KC_EQUAL',
+    '+': 'KC_EQUAL',
+    '[': 'KC_LEFT_BRACKET',
+    '{': 'KC_LEFT_BRACKET',
+    ']': 'KC_RIGHT_BRACKET',
+    '}': 'KC_RIGHT_BRACKET',
   };
 
   return nonstandardKeyMap[key];
@@ -65,17 +91,16 @@ const mapKeys = (key: string | null): string => {
 
 
 //Geneates JSON that we'll send to the backend with our keymap
-function GenerateQMKLayout(layout: (KeyInfo | null)[][][]): QMKLayout {
+function GenerateQMKLayout(layout: (KeyInfo | null)[][][], keyboardName: string): QMKLayout {
 
-  const finalLayout: QMKLayout = { layers: [] }
+  const finalLayout: QMKLayout = { keyboard: keyboardName, keymap: "default", layout: "LAYOUT_all", layers: [] }
   const currentLayout = structuredClone(layout)
+  finalLayout.layers[0] = [];
 
   //Iterate through layout and generate our QMK compatible key layout
   for (let j = 0; j < currentLayout[0].length; j++) {
-    finalLayout.layers[j] = [];
-
     for (let k = 0; k < currentLayout[0][j].length; k++) {
-      finalLayout.layers[j].push(mapKeys(currentLayout[0][j][k]?.value ?? null))
+      finalLayout.layers[0].push(mapKeys(currentLayout[0][j][k]?.value ?? null))
     }
   }
 
@@ -87,7 +112,7 @@ function GenerateQMKLayout(layout: (KeyInfo | null)[][][]): QMKLayout {
 class FirmwareDataService {
   getFirmware(layout: (KeyInfo | null)[][][], keyboardName: string){
     const baseURL = import.meta.env.VITE_BACKEND_BASE_URL
-    const data : QMKLayout= GenerateQMKLayout(layout)
+    const data : QMKLayout= GenerateQMKLayout(layout, keyboardName)
     return axios.put(`${baseURL}/firmware/${keyboardName}`, data, {
         responseType: 'blob'
     }).then((response) => {

@@ -132,7 +132,8 @@
               { "value": ",", "span": 1 },
               { "value": ".", "span": 1 },
               { "value": "/", "span": 1 },
-              { "value": "Shift", "span": 2 },
+              null,
+              { "value": "Shift", "span": 1 },
               null
             ],
             [
