@@ -1,14 +1,8 @@
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach, afterAll, type Mock } from 'vitest';
 import Auth from '../components/Auth';
-import { useGoogleLogin, googleLogout } from '@react-oauth/google';
 import axios from 'axios';
 
-//Mock Methods
-vi.mock('@react-oauth/google', () => ({
-  useGoogleLogin: vi.fn(),
-  googleLogout: vi.fn(),
-}));
 
 vi.mock('axios', () => ({
   default: {
@@ -36,10 +30,6 @@ const mockLocalStorage = (() => {
 // Mock console
 const consoleSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
 
-interface GoogleLoginError {
-  error: string;
-  error_description?: string;
-}
 
 
 Object.defineProperty(window, 'localStorage', {
@@ -50,17 +40,28 @@ Object.defineProperty(window, 'localStorage', {
 
 describe('Auth', () => {
   const mockLogin = vi.fn();
+  const mockLogout = vi.fn();
   const mockUserProfile = {
     name: 'John Doe',
     email: 'john@example.com',
     picture: 'https://example.com/picture.jpg',
   };
 
+  const loggedInProps = {
+    profile: mockUserProfile,
+    onLogin: mockLogin,
+    onLogout: mockLogout
+  }
+
+  const loggedOutProps = {
+    profile: null,
+    onLogin: mockLogin,
+    onLogout: mockLogout
+  }
+
   beforeEach(() => {
     vi.clearAllMocks();
     mockLocalStorage.clear();
-    
-    (useGoogleLogin as Mock).mockReturnValue(mockLogin);
   });
 
   afterAll(() => {
@@ -68,14 +69,14 @@ describe('Auth', () => {
   });
 
   it('renders sign in button when not authenticated', () => {
-    render(<Auth />);
+    render(<Auth {...loggedOutProps} />);
     
     expect(screen.getByText('Sign in with Google')).toBeInTheDocument();
     expect(screen.queryByText('Log Out')).not.toBeInTheDocument();
   });
 
   it('initiates Google login when sign in button is clicked', () => {
-    render(<Auth />);
+    render(<Auth {...loggedOutProps} />);
     
     const signInButton = screen.getByText('Sign in with Google');
     fireEvent.click(signInButton);
@@ -84,29 +85,13 @@ describe('Auth', () => {
   });
 
 
-  it('handles login error', () => {
-    let onErrorCallback: (error: GoogleLoginError) => void = () => {};
-    
-    (useGoogleLogin as Mock).mockImplementation((config) => {
-      onErrorCallback = config.onError;
-      return mockLogin;
-    });
-    
-    render(<Auth />);
-    
-    const error: GoogleLoginError = { error: 'Login failed' };
-    onErrorCallback(error); 
-
-    expect(consoleSpy).toHaveBeenCalledWith('Login Failed:', error);
-  });
-
   it('handles logout', async () => {
                             
     const mockToken = 'test-token';
     mockLocalStorage.setItem('authToken', mockToken);
     (axios.get as Mock).mockResolvedValue({ data: mockUserProfile });
     
-    render(<Auth />);
+    render(<Auth {...loggedInProps}/>);
     
     await waitFor(() => {
       expect(screen.getByText('Log Out')).toBeInTheDocument();
@@ -115,11 +100,8 @@ describe('Auth', () => {
     const logoutButton = screen.getByText('Log Out');
     fireEvent.click(logoutButton);
     
-    expect(googleLogout).toHaveBeenCalled();
-    expect(mockLocalStorage.getItem('authToken')).toBeNull();
+    expect(loggedInProps.onLogout).toHaveBeenCalled();
     
-    expect(screen.getByText('Sign in with Google')).toBeInTheDocument();
-    expect(screen.queryByText('Log Out')).not.toBeInTheDocument();
   });
 
 });
