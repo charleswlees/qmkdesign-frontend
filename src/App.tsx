@@ -11,6 +11,11 @@ import "./styles/App.css";
 import FirmwareDataService from "./services/firmware.ts";
 import type { KeyboardLayout } from "./types/KeyboardLayout.ts";
 import type { KeyInfo } from "./types/KeyboardLayout.ts";
+import type { UserProfile } from "./types/UserProfile.ts";
+import { useGoogleLogin, googleLogout } from "@react-oauth/google";
+import axios from "axios";
+import { loadLayoutFromApi, saveLayoutToApi } from "./services/save.ts";
+
 
 //Pulling initial state from local storage if possible
 const getInitialLayout = () => {
@@ -39,7 +44,9 @@ const getInitialLayout = () => {
 
 function App() {
   const [initialState] = useState(getInitialLayout);
-  const [keyboardName, setKeyboardName] = useState(localStorage.getItem("keyboardName") ?? "zsa/planck_ez");
+  const [keyboardName, setKeyboardName] = useState(
+    localStorage.getItem("keyboardName") ?? "zsa/planck_ez",
+  );
   const [rows, setRows] = useState(initialState.rows);
   const [columns, setColumns] = useState(initialState.columns);
   const [layers, setLayers] = useState<(KeyInfo | null)[][][]>(
@@ -54,6 +61,34 @@ function App() {
   const [currentLayer, setCurrentLayer] = useState<(KeyInfo | null)[][]>(
     layers[layerIndex],
   );
+
+  const [token, setToken] = useState<string | null>(
+    localStorage.getItem("authToken"),
+  );
+  const [profile, setProfile] = useState<UserProfile | null>(null);
+
+  useEffect(() => {
+    const fetchProfile = async () => {
+      if (token) {
+        try {
+          const res = await axios.get(
+            `https://www.googleapis.com/oauth2/v3/userinfo`,
+            {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            },
+          );
+          setProfile(res.data);
+        } catch (err) {
+          console.log("Failed to fetch profile:", err);
+          logout();
+        }
+      }
+    };
+
+    fetchProfile();
+  }, [token]);
 
   //Handle Changing Active Layer
   useEffect(() => {
@@ -70,6 +105,21 @@ function App() {
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentLayer]);
+
+  const login = useGoogleLogin({
+    onSuccess: (tokenResponse) => {
+      localStorage.setItem("authToken", tokenResponse.access_token);
+      setToken(tokenResponse.access_token);
+    },
+    onError: (error) => console.log("Login Failed:", error),
+  });
+
+  const logout = () => {
+    googleLogout();
+    localStorage.removeItem("authToken");
+    setToken(null);
+    setProfile(null);
+  };
 
   //Handle changing the keyboard preset
   const handleKeyboardChange = (newKeyboardName: string) => {
@@ -127,7 +177,7 @@ function App() {
 
     try {
       localStorage.setItem("keyboardLayout", layoutJSON);
-      localStorage.setItem("keyboardName", keyboardName)
+      localStorage.setItem("keyboardName", keyboardName);
       alert("Layout saved to browser storage!");
     } catch (error) {
       console.error("Failed to save layout to localStorage:", error);
@@ -143,9 +193,9 @@ function App() {
         ...layers,
         Array(rows)
           .fill("")
-          .map(() => Array(columns).fill(
-            {value: "\u00A0".repeat(5), span: 1}
-          )),
+          .map(() =>
+            Array(columns).fill({ value: "\u00A0".repeat(5), span: 1 }),
+          ),
       ]);
     }
   };
@@ -204,13 +254,13 @@ function App() {
           >
             <FaSave />
           </button>
-          <button className="icon-button" title="Import from Cloud" disabled>
+          <button className="icon-button" title="Import from Cloud" disabled={token ? false : true} onClick={() => loadLayoutFromApi(profile!, setLayers, setKeyboardName)}>
             <FaCloudDownloadAlt />
           </button>
-          <button className="icon-button" title="Export to Cloud" disabled>
+          <button className="icon-button" title="Export to Cloud" disabled={token ? false : true} onClick={() => saveLayoutToApi(layers, profile!, keyboardName)}>
             <FaCloudUploadAlt />
           </button>
-          <Auth />
+          <Auth profile={profile} onLogin={login} onLogout={logout} />
         </div>
       </header>
 
