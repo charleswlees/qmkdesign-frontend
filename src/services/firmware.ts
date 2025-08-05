@@ -121,7 +121,7 @@ class FirmwareDataService {
         const link = document.createElement('a');
         //Creates a temp-link for the bin file and triggers the download
         link.href = url;
-        link.setAttribute('download', 'firmware.zip'); 
+        link.setAttribute('download', 'firmware.bin'); 
         document.body.appendChild(link); 
         link.click(); 
         document.body.removeChild(link); 
