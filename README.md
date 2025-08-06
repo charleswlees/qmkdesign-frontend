@@ -11,6 +11,15 @@ Built in React with Typescript.
 
 The project is containerized, please use the Dockerfile to build and run the project. 
 
+```bash
+docker build -t qmkdesign-frontend . && docker run -p 5173:5173 qmkdesign-frontend
+```
+
+NOTE: If running locally make sure to set the environment variables:
+* VITE_GOOGLE_AUTH_CLIENT_ID - Google Auth Client ID for using Google's OAuth2 Provider
+* VITE_BACKEND_BASE_URL - Base URL For the Backend API
+
+
 The project is also hosted on AWS currently [here](http://d2m1tu7j8e1ut4.cloudfront.net/).
 
 ### Resources Used
