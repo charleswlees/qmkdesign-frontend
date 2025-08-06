@@ -54,6 +54,11 @@ resource "aws_s3_bucket_policy" "static_site_bucket_policy" {
   })
 }
 
+module "template_files" {
+  source   = "hashicorp/dir/template"
+  base_dir = "./dist"
+}
+
 resource "aws_s3_object" "hosting_bucket_files" {
   bucket = aws_s3_bucket.s3-static-website.id
 
