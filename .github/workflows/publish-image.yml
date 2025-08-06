@@ -15,11 +15,8 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
 
-      - name: List files (debugging)
-        run: |
-          ls -la
-          echo "---"
-          ls -la dist/ || echo "dist directory not found"
+      - name: Build project
+        run: npm run build
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
