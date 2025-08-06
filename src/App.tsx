@@ -17,7 +17,6 @@ import axios from "axios";
 import { loadLayoutFromApi, saveLayoutToApi } from "./services/save.ts";
 
 
-//Pulling initial state from local storage if possible
 const getInitialLayout = () => {
   const savedLayoutJSON = localStorage.getItem("keyboardLayout");
   if (savedLayoutJSON) {
@@ -121,25 +120,20 @@ function App() {
     setProfile(null);
   };
 
-  //Handle changing the keyboard preset
   const handleKeyboardChange = (newKeyboardName: string) => {
-    //Grab the details from the json
     const selectedKeyboard = keyboardInfo.keyboards.find(
       (kb) => kb.name === newKeyboardName,
     );
 
     if (selectedKeyboard) {
-      //Update state
       setKeyboardName(selectedKeyboard.name);
       setRows(selectedKeyboard.rows);
       setColumns(selectedKeyboard.columns);
 
-      //Set layout to default for new keyboard
       let newLayers = defaultLayouts.layouts.find(
         (layout) => layout.name === selectedKeyboard.name,
       );
 
-      //Null Check / Default Empty Keymap
       if (!newLayers || !newLayers.layout || !newLayers.layout.layers) {
         newLayers = {
           name: "zsa/planck_ez",
@@ -163,7 +157,6 @@ function App() {
     }
   };
 
-  //Save Layout Locally as JSON
   const handleSaveLayout = async () => {
     const layoutToSave: KeyboardLayout = {
       dimensions: {
@@ -185,7 +178,6 @@ function App() {
     }
   };
 
-  //Adding and Removing Layers from our Layout
 
   const addLayer = () => {
     if (layers.length < 10) {
@@ -209,19 +201,16 @@ function App() {
     }
   };
 
-  //Opens custom prompt on relevant cell
   const handleCellClick = (rowIndex: number, colIndex: number) => {
     setEditingCell({ rowIndex, colIndex });
     setIsPromptOpen(true);
   };
 
-  //Handles closing prompt
   const handleClosePrompt = () => {
     setIsPromptOpen(false);
     setEditingCell(null);
   };
 
-  //Updates Current Layer after saving cell
   const handleSaveCell = (newValue: string | null) => {
     console.log("Saving Cell");
     if (editingCell) {

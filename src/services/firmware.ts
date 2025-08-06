@@ -1,3 +1,6 @@
+//Charlie Lees
+//Converts keyboard state to match QMK standards and sends to backend server for compilation
+
 import type { KeyInfo } from "../types/KeyboardLayout";
 import axios from "axios";
 
