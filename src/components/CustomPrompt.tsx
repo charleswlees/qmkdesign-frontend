@@ -1,3 +1,6 @@
+// Charlie Lees
+// Prompt for the user to change the value of a key on the keyboard
+
 import React, { useEffect, useState } from "react";
 import "../styles/CustomPrompt.css";
 

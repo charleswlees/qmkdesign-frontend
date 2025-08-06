@@ -1,3 +1,6 @@
+//Charlie Lees
+//Renders the current keyboard state
+
 import React from "react";
 import "../styles/KeyboardGrid.css";
 import type { KeyInfo } from "../types/KeyboardLayout";

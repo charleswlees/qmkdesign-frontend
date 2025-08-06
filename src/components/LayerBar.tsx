@@ -1,3 +1,6 @@
+//Charlie Lees
+//GUI for managing layers of the keyboard
+
 import React from "react";
 import { FaPlus, FaMinus } from "react-icons/fa";
 import "../styles/LayerBar.css"; 

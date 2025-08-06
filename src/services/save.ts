@@ -1,3 +1,6 @@
+//Charlie Lees
+//Sends Keyboard State to backend database
+
 import type { KeyInfo } from "../types/KeyboardLayout";
 import type { APIOutput } from "../types/APIOutput";
 import type { UserProfile } from "../types/UserProfile.ts";

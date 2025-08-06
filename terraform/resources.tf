@@ -29,7 +29,7 @@ resource "aws_s3_bucket_website_configuration" "static_site_bucket_website_confi
   }
 }
 
-# S3 bucket policy to allow CloudFront access
+
 resource "aws_s3_bucket_policy" "static_site_bucket_policy" {
   bucket = aws_s3_bucket.s3-static-website.id
 

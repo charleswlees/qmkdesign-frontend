@@ -1,3 +1,6 @@
+// Charlie Lees
+// Rendering Login Button and handling Login
+
 import "../styles/Auth.css";
 import type { UserProfile } from "../types/UserProfile";
 
