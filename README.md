@@ -20,7 +20,7 @@ NOTE: If running locally make sure to set the environment variables:
 * VITE_BACKEND_BASE_URL - Base URL For the Backend API
 
 
-The project is also hosted on AWS currently [here](http://d2m1tu7j8e1ut4.cloudfront.net/).
+
 
 ### Resources Used
 
